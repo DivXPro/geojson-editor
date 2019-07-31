@@ -3,9 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@turf/turf": "^5.1.6",
+    "deck.gl": "^7.1.10",
+    "immutable": "^4.0.0-rc.12",
+    "nebula.gl": "^0.14.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-hotkeys": "^2.0.0",
+    "react-map-gl": "^5.0.7",
+    "react-scripts": "3.0.1",
+    "styled-components": "^4.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -27,5 +34,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@turf/difference": "^6.0.1"
   }
 }
