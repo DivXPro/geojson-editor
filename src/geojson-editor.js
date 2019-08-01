@@ -6,6 +6,7 @@ import { HotKeys } from "react-hotkeys";
 import { EditableGeoJsonLayer } from 'nebula.gl';
 import ControlPlanel from './ControlPanel';
 import SliderBar from '@/components/slider-bar';
+import exportJson from '@/utils/export-json';
 
 const DRAW_LINE_STRING = 'drawLineString';
 const DRAW_PROLYGON = 'drawPolygon';
@@ -87,6 +88,10 @@ export default class GeoJsonEditor extends React.Component {
     this.setState({
       geo: geoImmutable.set('features', geoImmutable.get('features').set(index, JSON.parse(geojson))).toJS()
     });
+  }
+
+  exportGeoJson() {
+    exportJson(this.state.geo);
   }
 
   renderStaticMap(viewport: Object) {
@@ -219,6 +224,11 @@ export default class GeoJsonEditor extends React.Component {
         icon: 'resize',
         mode: SCALE_MODE,
         handle: this.setEditMode.bind(this, SCALE_MODE)
+      },
+      {
+        text: 'download',
+        icon: 'cloud_down',
+        handle: this.exportGeoJson.bind(this)
       }
     ];
     

@@ -1,5 +1,5 @@
 import React from "react";
-import '../../Svg.scss';
+import '@/styles/svg.scss';
 
 function SvgIcon(props) {
   const { name, fill } = props;
