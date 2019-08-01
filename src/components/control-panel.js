@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import ToggleButton from './ToggleButton';
+import ToggleButton from '../ToggleButton';
 
 const Panel = styled.div`
   width: 50px;

@@ -4,7 +4,7 @@ import { fromJS } from 'immutable';
 import MapGL from 'react-map-gl';
 import { HotKeys } from "react-hotkeys";
 import { EditableGeoJsonLayer } from 'nebula.gl';
-import ControlPlanel from './ControlPanel';
+import ControlPlanel from '@/compnents/control-panel';
 import SliderBar from '@/components/slider-bar';
 import exportJson from '@/utils/export-json';
 
