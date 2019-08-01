@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import GeoJsonEditor from './GeoJsonEditor';
-import * as serviceWorker from './serviceWorker';
 import { HotKeys } from "react-hotkeys";
 import 'mapbox-gl/dist/mapbox-gl.css';
+import './index.css';
+import GeoJsonEditor from './geojson-editor';
+import * as serviceWorker from './serviceWorker';
+import "./icons";
 
 const initViewport = {
   bearing: 0,

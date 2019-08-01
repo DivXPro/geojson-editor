@@ -15,12 +15,12 @@ const Panel = styled.div`
   padding: 10px;
   position: relative;
   font-size: .9rem;
-  box-sizing: border-box;;
+  box-sizing: border-box;
 `;
 
 
 function ControlPlanel(props) {
-  const toggleButtons = props.toggles.map(toggle => <ToggleButton key={toggle.text} data={toggle} />);
+  const toggleButtons = props.toggles.map(toggle => <ToggleButton key={toggle.text} data={toggle} mode={props.mode}/>);
 
   return <Panel>
     {toggleButtons}

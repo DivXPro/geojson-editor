@@ -1,0 +1,29 @@
+.toggle-button {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  background-color: white;
+  border-bottom: 1px solid #ccc;
+  font-size: 10px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: inherit;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  box-shadow: 0 0 1px 1px #cecece;
+  &:first-child {
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-top: 1px solid #ccc;
+    box-shadow: 0 0 1px 1px #cecece;
+  }
+  &:last-child {
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-bottom: 1px solid #ccc;
+  }
+  &.active, &:hover {
+    background: #f4f4f4;
+  }
+}
