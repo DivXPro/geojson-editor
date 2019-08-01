@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HotKeys } from "react-hotkeys";
+import * as serviceWorker from './serviceWorker';
+import GeoJsonEditor from './components/geojson-editor';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './index.css';
-import GeoJsonEditor from './geojson-editor';
-import * as serviceWorker from './serviceWorker';
 import "./icons";
+
 
 const initViewport = {
   bearing: 0,
@@ -17,20 +17,8 @@ const initViewport = {
   zoom: 11
 };
 
-const keyMap = {
-  SHIFT_DOWN: { sequence: 'shift', action: 'keydown' },
-  SHIFT_UP: { sequence: 'shift', action: 'keyup' },
-  ALT_DOWN: { sequence: 'alt', action: 'keydown' },
-  ALT_UP: { sequence: 'alt', action: 'keyup' },
-  ENTER: 'enter',
-  DEL: ['del', 'backspace']
-};
-
-
 ReactDOM.render(
-  <HotKeys keyMap={keyMap}>
-    <GeoJsonEditor viewport={initViewport} />
-  </HotKeys>,
+  <GeoJsonEditor viewport={initViewport} />,
   document.getElementById('root')
 );
 

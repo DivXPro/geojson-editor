@@ -2,11 +2,12 @@ import React from 'react';
 import DeckGL from '@deck.gl/react';
 import { fromJS } from 'immutable';
 import MapGL from 'react-map-gl';
-import { HotKeys } from "react-hotkeys";
+import { HotKeys } from 'react-hotkeys';
 import { EditableGeoJsonLayer } from 'nebula.gl';
-import ControlPlanel from '@/compnents/control-panel';
-import SliderBar from '@/components/slider-bar';
+
 import exportJson from '@/utils/export-json';
+import ControlPlanel from './control-panel';
+import SliderBar from './slider-bar';
 
 const DRAW_LINE_STRING = 'drawLineString';
 const DRAW_PROLYGON = 'drawPolygon';
@@ -18,6 +19,16 @@ const SCALE_MODE = 'scale';
 const ROTATE_MODE = 'rotate';
 const TRANSLATE_MODE = 'translate';
 const VIEW_MODE = 'view';
+
+const keyMap = {
+  SHIFT_DOWN: { sequence: 'shift', action: 'keydown' },
+  SHIFT_UP: { sequence: 'shift', action: 'keyup' },
+  ALT_DOWN: { sequence: 'alt', action: 'keydown' },
+  ALT_UP: { sequence: 'alt', action: 'keyup' },
+  ENTER: 'enter',
+  DEL: ['del', 'backspace']
+};
+
 
 export default class GeoJsonEditor extends React.Component {
   constructor(props) {
@@ -91,7 +102,7 @@ export default class GeoJsonEditor extends React.Component {
   }
 
   exportGeoJson() {
-    exportJson(this.state.geo);
+    exportJson(JSON.stringify(this.state.geo));
   }
 
   renderStaticMap(viewport: Object) {
@@ -233,19 +244,21 @@ export default class GeoJsonEditor extends React.Component {
     ];
     
     return <React.Fragment>
-      <HotKeys handlers={handleKeyPress}>
-        <DeckGL
-          width="100%"
-          height="100%"
-          initialViewState={this.props.viewport}
-          onViewStateChange={({viewState}) => this.setState({ viewport: viewState })}
-          // getCursor={editableGeoJsonLayer.getCursor.bind(editableGeoJsonLayer)}
-          onClick={this.handleDeckClick.bind(this)}
-          pickingRadius={5}
-          layers={[editableGeoJsonLayer]}
-          controller={true}>
-          {this.renderStaticMap(this.state.viewport)}
-        </DeckGL>
+      <HotKeys keyMap={keyMap}>
+        <HotKeys handlers={handleKeyPress}>
+          <DeckGL
+            width="100%"
+            height="100%"
+            initialViewState={this.props.viewport}
+            onViewStateChange={({viewState}) => this.setState({ viewport: viewState })}
+            // getCursor={editableGeoJsonLayer.getCursor.bind(editableGeoJsonLayer)}
+            onClick={this.handleDeckClick.bind(this)}
+            pickingRadius={5}
+            layers={[editableGeoJsonLayer]}
+            controller={true}>
+            {this.renderStaticMap(this.state.viewport)}
+          </DeckGL>
+        </HotKeys>
       </HotKeys>
       <ControlPlanel toggles={toggles} mode={this.state.mode} />
       <SliderBar index={this.state.currentIndex} geojson={this.currentGeoJson} setCurrentGeoJson={this.setCurrentGeoJson.bind(this)}></SliderBar>

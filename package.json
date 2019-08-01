@@ -1,10 +1,22 @@
 {
   "name": "geojson-editor",
-  "version": "0.1.0",
-  "private": true,
+  "description": "A geojson editor base on Mapbox and Nebula.",
+  "version": "1.0.0",
+  "license": "MIT",
+  "keywords": [
+    "mapbox",
+    "mapbox-gl",
+    "react",
+    "react-mapbox-gl",
+    "nebula.gl",
+    "deck.gl"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/divxpro/geojson-editor.git"
+  },
   "dependencies": {
     "@turf/difference": "^6.0.1",
-    "@turf/turf": "^5.1.6",
     "deck.gl": "^7.1.10",
     "immutable": "^4.0.0-rc.12",
     "nebula.gl": "^0.14.0",
