@@ -17,6 +17,10 @@
   },
   "dependencies": {
     "@turf/difference": "^6.0.1",
+    "@uppy/core": "^1.2.0",
+    "@uppy/file-input": "^1.2.0",
+    "@uppy/react": "^1.2.0",
+    "@uppy/transloadit": "^1.2.0",
     "deck.gl": "^7.1.10",
     "immutable": "^4.0.0-rc.12",
     "nebula.gl": "^0.14.0",

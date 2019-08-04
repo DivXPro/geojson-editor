@@ -40,7 +40,7 @@ function SliderBar (props) {
 
   return <StyledSliderBar>
     <h3>GeoJson</h3>
-    {(props.index != null && props.index > -1) &&
+    {(props.index != null && props.index > -1 && props.geojson) &&
       <StyledcodeEditorContainer>
         <JsonEditor
           value={JSON.stringify(props.geojson)}

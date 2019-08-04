@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import ToggleButton from '../ToggleButton';
+import UploadField from '@/components/commons/upload-field';
+import ToggleButton from './toggle-button';
 
 const Panel = styled.div`
   width: 50px;
@@ -22,7 +23,18 @@ const Panel = styled.div`
 function ControlPlanel(props) {
   const toggleButtons = props.toggles.map(toggle => <ToggleButton key={toggle.text} data={toggle} mode={props.mode}/>);
 
+  // const uploadHandle = (files) => {
+  //   const reader = new FileReader();
+  //   reader.readAsArrayBuffer(files[0]);
+  //   reader.onload = (e) => {
+  //     console.log('image', e.target.result);
+  //   }
+  // }
+
   return <Panel>
+    {/* <UploadField onFiles={uploadHandle}>
+      <div>upload</div>
+    </UploadField> */}
     {toggleButtons}
   </Panel>;
 }

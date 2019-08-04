@@ -1,5 +1,5 @@
 import React from 'react';
-import SvgIcon from './components/commons/svg-icon';
+import SvgIcon from './commons/svg-icon';
 import '@/styles/controlPanel.scss';
 
 
