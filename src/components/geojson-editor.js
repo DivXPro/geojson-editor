@@ -7,6 +7,7 @@ import { EditableGeoJsonLayer } from 'nebula.gl';
 import { GeoJsonLayer } from '@deck.gl/layers';
 
 import exportJson from '@/utils/export-json';
+import cutGeometry from '@/utils/cutGeometry';
 import ControlPlanel from './control-panel';
 import SideBar from './side-panel/side-bar';
 
@@ -16,10 +17,12 @@ const DRAW_POINT = 'drawPoint';
 const DRAW_CIRCLE_FROM_CENTER = 'drawCircleFromCenter';
 const MODIFY_MODE = 'modify';
 const EXTRUDE_MODE = 'extrude';
+const SPLIT_MODE = 'split'
 const SCALE_MODE = 'scale';
 const ROTATE_MODE = 'rotate';
 const TRANSLATE_MODE = 'translate';
 const VIEW_MODE = 'view';
+const CUT_MODE = 'cut';
 
 const keyMap = {
   SHIFT_DOWN: { sequence: 'shift', action: 'keydown' },
@@ -106,6 +109,14 @@ export default class GeoJsonEditor extends React.Component {
     this.setState({ mode });
   }
 
+  // 切割模式
+  setCutMode() {
+    this.setState({
+      selectedFeatureIndexes: [],
+      mode: CUT_MODE
+    });
+  }
+
   setBaseGeom(baseGeom) {
     this.setState({
       baseGeom
@@ -171,7 +182,7 @@ export default class GeoJsonEditor extends React.Component {
       id: 'draw-layer',
       data: this.state.geo,
       selectedFeatureIndexes: this.state.selectedFeatureIndexes,
-      mode: this.state.mode,
+      mode: this.state.mode === CUT_MODE ? DRAW_PROLYGON : this.state.mode,
       pickable: true,
       autoHighlight: true,
       lineWidthScale: 6,
@@ -195,13 +206,24 @@ export default class GeoJsonEditor extends React.Component {
         if (editType === 'removePosition' && !this.state.pointsRemovable) {
           return;
         }
-        if (editType === 'addFeature' && this.state.mode !== 'duplicate') {
-          featureIndexes = featureIndexes || editContext.featureIndexes;
-          updatedSelectedFeatureIndexes = [...this.state.selectedFeatureIndexes, ...featureIndexes];
+        if (editType === 'addFeature') {
+          if (this.state.mode === CUT_MODE) {
+            updatedData = cutGeometry(updatedData, updatedData.features[featureIndexes[0]]);
+            updatedSelectedFeatureIndexes = [];
+            this.setState({
+              geo: updatedData,
+              selectedFeatureIndexes: updatedSelectedFeatureIndexes,
+              mode: VIEW_MODE
+            });
+            return;
+          } else if (this.state.mode !== 'duplicate') {
+            featureIndexes = featureIndexes || editContext.featureIndexes;
+            updatedSelectedFeatureIndexes = [...this.state.selectedFeatureIndexes, ...featureIndexes];
+          }
         }
         this.setState({
           geo: updatedData,
-          selectedFeatureIndexes: updatedSelectedFeatureIndexes
+          selectedFeatureIndexes: updatedSelectedFeatureIndexes,
         });
       }
     });
@@ -263,18 +285,24 @@ export default class GeoJsonEditor extends React.Component {
         mode: ROTATE_MODE,
         handle: this.setEditMode.bind(this, ROTATE_MODE)
       },
-      // {
-      //   text: 'Extrude',
-      //   icon: 'arrow_repeat',
-      //   mode: EXTRUDE_MODE,
-      //   handle: this.setEditMode.bind(this, EXTRUDE_MODE)
-      // },
       {
         text: 'Scale',
         icon: 'resize',
         mode: SCALE_MODE,
         handle: this.setEditMode.bind(this, SCALE_MODE)
       },
+      {
+        text: 'Split',
+        icon: 'focus_horizontal',
+        mode: SPLIT_MODE,
+        handle: this.setEditMode.bind(this, SPLIT_MODE)
+      },
+      {
+        text: 'Cut',
+        icon: 'exclude',
+        mode: CUT_MODE,
+        handle: this.setCutMode.bind(this)
+      }
     ];
     
     return <React.Fragment>

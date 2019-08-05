@@ -2,7 +2,7 @@ import React from 'react';
 import Styled from 'styled-components';
 import classNames from 'classnames';
 import SvgIcon from './commons/svg-icon';
-import '@/styles/controlPanel.scss';
+import '@/styles/control-panel.scss';
 
 const StyledToggleButton = Styled.div`
   display: flex;
