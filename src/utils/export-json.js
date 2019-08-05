@@ -1,18 +1,5 @@
 export default function exportJson(data, type = 'application/json') {
   const blob = new Blob([data], { type });
-  // const reader = new FileReader();
-  // reader.onload = e => {
-  //   const res = e.target.result;
-  //   try {
-  //     const json = JSON.parse(res)
-  //     if (json) {
-  //       return;
-  //     }
-  //   } catch (err) {
-  //     //
-  //   }
-  // }
-  // reader.readAsText(jsonBlob);
 
   // 兼容不同浏览器的URL对象
   if (!!window.ActiveXObject || "ActiveXObject" in window) {

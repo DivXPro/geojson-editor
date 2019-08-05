@@ -8,7 +8,7 @@ import { GeoJsonLayer } from '@deck.gl/layers';
 
 import exportJson from '@/utils/export-json';
 import ControlPlanel from './control-panel';
-import SliderBar from './slider-bar';
+import SliderBar from './side-panel/side-bar';
 
 const DRAW_LINE_STRING = 'drawLineString';
 const DRAW_PROLYGON = 'drawPolygon';
@@ -104,6 +104,12 @@ export default class GeoJsonEditor extends React.Component {
 
   setEditMode(mode) {
     this.setState({ mode });
+  }
+
+  setBaseGeom(baseGeom) {
+    this.setState({
+      baseGeom
+    });
   }
 
   setCurrentGeoJson(geojson: string, index: string) {
@@ -273,11 +279,6 @@ export default class GeoJsonEditor extends React.Component {
         text: 'download',
         icon: 'cloud_down',
         handle: this.exportGeoJson.bind(this)
-      },
-      {
-        text: 'image-layout',
-        icon: 'movement_focus',
-        // handle: this.setImageLayout.bind(this)
       }
     ];
     
@@ -297,7 +298,12 @@ export default class GeoJsonEditor extends React.Component {
         </DeckGL>
       </GlobalHotKeys>
       <ControlPlanel toggles={toggles} mode={this.state.mode} />
-      <SliderBar index={this.state.currentIndex} geojson={this.currentGeoJson} setCurrentGeoJson={this.setCurrentGeoJson.bind(this)}></SliderBar>
+      <SliderBar
+        index={this.state.currentIndex}
+        feature={this.currentGeoJson}
+        setCurrentGeoJson={this.setCurrentGeoJson.bind(this)}
+        setBaseGeom={this.setBaseGeom.bind(this)}
+      />
     </React.Fragment>;
   }
 }
