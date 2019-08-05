@@ -155,7 +155,7 @@ export default class GeoJsonEditor extends React.Component {
       height="100%"
       {...viewport}
       mapStyle="mapbox://styles/mapbox/light-v9"
-      mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
+      mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN || 'pk.eyJ1IjoiZGl2eCIsImEiOiJtdzN3dndvIn0.LKwcY4HJPVItRlDBfNodTw'}
     />;
   }
 
