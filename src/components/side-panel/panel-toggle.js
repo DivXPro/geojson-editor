@@ -29,21 +29,20 @@ const PanelTab = styled.div.attrs({
   margin-right: 12px;
   padding-bottom: 6px;
   width: 30px;
-
   :hover {
     cursor: pointer;
-    color: ${props => 'white'};
+    color: white;
+    fill: white;
   }
 `;
 
 function PanelToggle (props) {
-  const [activePanel] = useState(props.activePanel);
   return (
     <PanelHeaderBottom>
       {props.panels.map(panel => (
         <PanelTab
           key={panel.id}
-          active={activePanel === panel.id}
+          active={props.activePanel === panel.id}
           onClick={() => props.togglePanel(panel.id)}
         >
           <SvgIcon name={panel.icon}></SvgIcon>
