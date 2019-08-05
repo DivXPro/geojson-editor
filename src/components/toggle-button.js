@@ -1,15 +1,38 @@
 import React from 'react';
+import Styled from 'styled-components';
+import classNames from 'classnames';
 import SvgIcon from './commons/svg-icon';
 import '@/styles/controlPanel.scss';
 
+const StyledToggleButton = Styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(106, 116, 133);
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 6px 12px 0px;
+  transition: all 0.4s ease 0s;
+  border-radius: 20px;
+  border-width: 0px;
+  color: rgb(255, 255, 255);
+  fill: rgb(255, 255, 255);
+  width: 40px;
+  height: 40px;
+  margin: 4px 0;
+  &.active {
+    background-color: rgb(160, 167, 180);
+  }
+  :hover {
+    cursor: pointer;
+    background-color: rgb(160, 167, 180);
+  }
+`
 
 function ToggleButton(props) {
-  function style() {
-    return props.mode === props.data.mode ? 'toggle-button active' : 'toggle-button';
-  }
-  return <div className={style()} onClick={props.data.handle}>
-    <SvgIcon name={props.data.icon} />
-  </div>;
+  return (
+    <StyledToggleButton className={classNames({active: props.data.mode === props.mode})} onClick={props.data.handle}>
+      <SvgIcon name={props.data.icon} />
+    </StyledToggleButton>
+  );
 }
 
 export default ToggleButton;

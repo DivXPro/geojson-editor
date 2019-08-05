@@ -8,7 +8,7 @@ import { GeoJsonLayer } from '@deck.gl/layers';
 
 import exportJson from '@/utils/export-json';
 import ControlPlanel from './control-panel';
-import SliderBar from './side-panel/side-bar';
+import SideBar from './side-panel/side-bar';
 
 const DRAW_LINE_STRING = 'drawLineString';
 const DRAW_PROLYGON = 'drawPolygon';
@@ -275,11 +275,6 @@ export default class GeoJsonEditor extends React.Component {
         mode: SCALE_MODE,
         handle: this.setEditMode.bind(this, SCALE_MODE)
       },
-      {
-        text: 'download',
-        icon: 'cloud_down',
-        handle: this.exportGeoJson.bind(this)
-      }
     ];
     
     return <React.Fragment>
@@ -298,11 +293,12 @@ export default class GeoJsonEditor extends React.Component {
         </DeckGL>
       </GlobalHotKeys>
       <ControlPlanel toggles={toggles} mode={this.state.mode} />
-      <SliderBar
+      <SideBar
         index={this.state.currentIndex}
         feature={this.currentGeoJson}
         setCurrentGeoJson={this.setCurrentGeoJson.bind(this)}
         setBaseGeom={this.setBaseGeom.bind(this)}
+        exportGeoJson={this.exportGeoJson.bind(this)}
       />
     </React.Fragment>;
   }

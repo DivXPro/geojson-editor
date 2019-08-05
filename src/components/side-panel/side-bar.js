@@ -40,7 +40,7 @@ function SideBar (props) {
 
   return (
     <StyledSideBar className="side-bar">
-      <PanelHeader panels={panels} activePanel={activePanel} togglePanel={togglePanel}></PanelHeader>
+      <PanelHeader panels={panels} activePanel={activePanel} togglePanel={togglePanel} exportGeoJson={props.exportGeoJson}></PanelHeader>
       {activePanel === 'feature' && <FeatureProfile index={props.index} setCurrentFeature={setCurrentFeature} feature={props.feature}></FeatureProfile>}
       {activePanel === 'layers' && <LayerList setBaseGeom={props.setBaseGeom}></LayerList>}
     </StyledSideBar>
