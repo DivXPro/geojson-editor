@@ -11,6 +11,9 @@ const WrapperFeatureProfile = Styled.section`
   background: rgb(36, 39, 48);
   padding: 16px;
   min-height 480px;
+  textarea {
+    outline: none;
+  }
 `
 
 function FeatureProfile(props) {
