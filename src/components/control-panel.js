@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ToggleButton from './toggle-button';
@@ -15,7 +16,10 @@ const Panel = styled.div`
 
 
 function ControlPlanel(props) {
-  const toggleButtons = props.toggles.map(toggle => <ToggleButton key={toggle.text} data={toggle} mode={props.mode}/>);
+  const { mode } = useSelector(state => ({
+    mode: state.mode
+  }))
+  const toggleButtons = props.toggles.map(toggle => <ToggleButton key={toggle.text} data={toggle} mode={mode}/>);
 
   return (
     <Panel>
@@ -25,8 +29,7 @@ function ControlPlanel(props) {
 }
 
 ControlPlanel.propTypes = {
-  toggles: PropTypes.object,
-  mode: PropTypes.string
+  toggles: PropTypes.array,
 };
 
 export default ControlPlanel;

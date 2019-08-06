@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import exportJson from '@/utils/export-json';
 import PanelToggle from './panel-toggle';
 
 const StyledPanelHeader = styled.div`
@@ -32,13 +34,20 @@ const StyledPanelHeader = styled.div`
 `;
 
 
-
 function PanelHeader(props) {
+  const { geometry } = useSelector(state => ({
+    geometry: state.geometry
+  }));
+
+  function exportGeometry() {
+    exportJson(JSON.stringify(geometry));
+  }
+
   return (
     <React.Fragment>
       <StyledPanelHeader>
         <div className="logo-title">GeoJSON Editor</div>
-        <div className="action" onClick={props.exportGeoJson}>导出</div>
+        <div className="action" onClick={exportGeometry}>导出</div>
       </StyledPanelHeader>
       <PanelToggle
         activePanel={props.activePanel}
@@ -50,7 +59,6 @@ function PanelHeader(props) {
 }
 
 PanelHeader.propTypes = {
-  exportGeoJson: PropTypes.func,
   activePanel: PropTypes.string,
   togglePanel: PropTypes.func
 }

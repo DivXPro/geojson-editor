@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import PanelHeader from './panel-header';
 import FeatureProfile from './feature-profile';
@@ -28,28 +27,15 @@ function SideBar (props) {
   function togglePanel(id) {
     setActivePanel(id);
   }
-  
-  function setCurrentFeature(data) {
-    try {
-      JSON.parse(data);
-      props.setCurrentGeoJson(data, props.index);
-    } catch (error) {
-      console.log('error', error); 
-    }
-  }
 
 
   return (
     <StyledSideBar className="side-bar">
-      <PanelHeader panels={panels} activePanel={activePanel} togglePanel={togglePanel} exportGeoJson={props.exportGeoJson}></PanelHeader>
-      {activePanel === 'feature' && <FeatureProfile index={props.index} setCurrentFeature={setCurrentFeature} feature={props.feature}></FeatureProfile>}
-      {activePanel === 'layers' && <LayerList setBaseGeom={props.setBaseGeom}></LayerList>}
+      <PanelHeader panels={panels} activePanel={activePanel} togglePanel={togglePanel}></PanelHeader>
+      {activePanel === 'feature' && <FeatureProfile></FeatureProfile>}
+      {activePanel === 'layers' && <LayerList></LayerList>}
     </StyledSideBar>
   )
-}
-
-SideBar.propTypes = {
-  setCurrentGeoJson: PropTypes.func,
 }
 
 export default SideBar;

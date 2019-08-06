@@ -1,6 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Styled from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { setBaseGeom } from '@/store/actions';
 import UploadField from '@/components/commons/upload-field';
 
 const WrapperLayerList = Styled.section`
@@ -33,11 +34,12 @@ const WrapperLayerList = Styled.section`
 
 
 function LayerList(props) {
+  const dispatch = useDispatch();
   function updateGeom(files) {
     const reader = new FileReader();
     reader.readAsText(files[0]);
     reader.onload = (e) => {
-      props.setBaseGeom(JSON.parse(e.target.result));
+      dispatch(setBaseGeom(JSON.parse(e.target.result)));
     }
   }
   return (
@@ -52,10 +54,6 @@ function LayerList(props) {
       </UploadField>
     </WrapperLayerList>
   )
-}
-
-LayerList.propTypes = {
-  setBaseGemo: PropTypes.func
 }
 
 export default LayerList;

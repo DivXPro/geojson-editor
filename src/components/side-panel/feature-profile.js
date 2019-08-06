@@ -1,8 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 import Styled from 'styled-components';
 import JsonEditor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
+import { setFeature } from '@/store/actions';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-json';
 import 'prismjs/components/prism-markup';
@@ -18,13 +19,23 @@ const WrapperFeatureProfile = Styled.section`
 `
 
 function FeatureProfile(props) {
+  const dispatch = useDispatch();
+  const { index, feature } = useSelector(state => ({
+    index: state.selectedFeatureIndexes[0],
+    feature: JSON.stringify(state.geometry.features[state.selectedFeatureIndexes[0]]),
+  }));
+
+  function setCurrentFeature(data) {
+    dispatch(setFeature(index, JSON.parse(data)));
+  }
+
   return (
     <WrapperFeatureProfile>
       {
-        (props.index != null && props.index > -1 && props.feature) ?
+        (index != null && index > -1 && feature) ?
         <JsonEditor
-          value={JSON.stringify(props.feature)}
-          onValueChange={props.setCurrentFeature}
+          value={feature}
+          onValueChange={setCurrentFeature}
           highlight={data => highlight(data, languages.json)}
           padding={10}
           style={{
@@ -42,10 +53,5 @@ function FeatureProfile(props) {
     </WrapperFeatureProfile>
   )
 }
-
-FeatureProfile.propTypes = {
-  index: PropTypes.number,
-  feature: PropTypes.object
-};
 
 export default FeatureProfile;

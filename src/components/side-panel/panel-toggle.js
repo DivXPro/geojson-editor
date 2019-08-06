@@ -55,7 +55,7 @@ function PanelToggle (props) {
 
 PanelToggle.propTypes = {
   panels: PropTypes.array,
-  activePanel: PropTypes.func,
+  activePanel: PropTypes.string,
   togglePanel: PropTypes.func
 }
 
