@@ -10,11 +10,11 @@ import "./icons";
 const initViewport = {
   bearing: 0,
   height: 0,
-  latitude: 37.76,
-  longitude: -122.44,
+  latitude: 40,
+  longitude: 110,
   pitch: 0,
   width: 0,
-  zoom: 11
+  zoom: 3
 };
 
 ReactDOM.render(
