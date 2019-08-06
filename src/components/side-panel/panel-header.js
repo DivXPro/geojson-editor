@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import PanelToggle from './panel-toggle';
 
@@ -33,7 +34,6 @@ const StyledPanelHeader = styled.div`
 
 
 function PanelHeader(props) {
-
   return (
     <React.Fragment>
       <StyledPanelHeader>
@@ -47,6 +47,12 @@ function PanelHeader(props) {
       />
     </React.Fragment>
   );
+}
+
+PanelHeader.propTypes = {
+  exportGeoJson: PropTypes.func,
+  activePanel: PropTypes.string,
+  togglePanel: PropTypes.func
 }
 
 export default PanelHeader;

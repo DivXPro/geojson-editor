@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import SvgIcon from '@/components/commons/svg-icon';
 
@@ -50,6 +51,12 @@ function PanelToggle (props) {
       ))}
     </PanelHeaderBottom>
   );
+}
+
+PanelToggle.propTypes = {
+  panels: PropTypes.array,
+  activePanel: PropTypes.func,
+  togglePanel: PropTypes.func
 }
 
 export default PanelToggle;

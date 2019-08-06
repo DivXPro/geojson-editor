@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Styled from 'styled-components';
 import UploadField from '@/components/commons/upload-field';
 
@@ -51,6 +52,10 @@ function LayerList(props) {
       </UploadField>
     </WrapperLayerList>
   )
+}
+
+LayerList.propTypes = {
+  setBaseGemo: PropTypes.func
 }
 
 export default LayerList;

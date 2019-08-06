@@ -1,6 +1,7 @@
 import React from 'react';
-import Styled from 'styled-components';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import Styled from 'styled-components';
 import SvgIcon from './commons/svg-icon';
 import '@/styles/control-panel.scss';
 
@@ -34,5 +35,10 @@ function ToggleButton(props) {
     </StyledToggleButton>
   );
 }
+
+ToggleButton.propTypes = {
+  mode: PropTypes.string,
+  data: PropTypes.object
+};
 
 export default ToggleButton;

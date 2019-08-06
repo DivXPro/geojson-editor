@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ToggleButton from './toggle-button';
 
@@ -22,5 +23,10 @@ function ControlPlanel(props) {
     </Panel>
   );
 }
+
+ControlPlanel.propTypes = {
+  toggles: PropTypes.object,
+  mode: PropTypes.string
+};
 
 export default ControlPlanel;

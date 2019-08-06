@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Styled from 'styled-components';
 import JsonEditor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
@@ -41,5 +42,10 @@ function FeatureProfile(props) {
     </WrapperFeatureProfile>
   )
 }
+
+FeatureProfile.propTypes = {
+  index: PropTypes.number,
+  feature: PropTypes.object
+};
 
 export default FeatureProfile;

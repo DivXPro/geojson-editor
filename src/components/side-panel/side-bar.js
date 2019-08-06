@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import PanelHeader from './panel-header';
 import FeatureProfile from './feature-profile';
@@ -45,6 +46,10 @@ function SideBar (props) {
       {activePanel === 'layers' && <LayerList setBaseGeom={props.setBaseGeom}></LayerList>}
     </StyledSideBar>
   )
+}
+
+SideBar.propTypes = {
+  setCurrentGeoJson: PropTypes.func,
 }
 
 export default SideBar;
