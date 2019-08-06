@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { EditableGeoJsonLayer } from 'nebula.gl';
 import { GeoJsonLayer } from '@deck.gl/layers';
 import { setGeometry, setSelectFeatureIndexes, setMode, removeFeature } from '@/store/actions';
-import cutGeometry from '@/utils/cutGeometry';
+import cutGeometry from '@/utils/cut-geometry';
 import ControlPlanel from '../control-panel';
 import SideBar from '../side-panel/side-bar';
 
