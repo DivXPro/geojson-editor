@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import ToggleButton from './toggle-button';
+import ToggleButton from './side-panel/toggle-button';
 
 const Panel = styled.div`
   width: 40px;

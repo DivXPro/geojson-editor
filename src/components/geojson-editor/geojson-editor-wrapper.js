@@ -2,7 +2,7 @@ import React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux'
 import geometryApp from '@/store/reducers';
-import MapContainer from './map-container';
+import MapEditor from './map-editor';
 
 export class GeoJsonEditor extends React.Component {
   constructor(props) {
@@ -26,7 +26,7 @@ export class GeoJsonEditor extends React.Component {
   render() {
     return (
       <Provider store={this.store}>
-        <MapContainer viewport={this.props.viewport}/>
+        <MapEditor viewport={this.props.viewport}/>
       </Provider>
     );
   }

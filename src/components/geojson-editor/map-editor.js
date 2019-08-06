@@ -7,8 +7,8 @@ import { EditableGeoJsonLayer } from 'nebula.gl';
 import { GeoJsonLayer } from '@deck.gl/layers';
 import { setGeometry, setSelectFeatureIndexes, setMode, removeFeature } from '@/store/actions';
 import cutGeometry from '@/utils/cutGeometry';
-import ControlPlanel from './control-panel';
-import SideBar from './side-panel/side-bar';
+import ControlPlanel from '../control-panel';
+import SideBar from '../side-panel/side-bar';
 
 const DRAW_LINE_STRING = 'drawLineString';
 const DRAW_POLYGON = 'drawPolygon';
@@ -50,7 +50,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export class MapContainer extends React.Component {
+export class MapEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -59,7 +59,6 @@ export class MapContainer extends React.Component {
     }
   }
   get geometry() {
-    console.log('store', this.props);
     return this.props.geometry;
   }
 
@@ -132,7 +131,6 @@ export class MapContainer extends React.Component {
   }
 
   handleDeckClick(e) {
-    console.log('this.mode', this.mode);
     if (
       this.mode !== DRAW_LINE_STRING &&
       this.mode !== DRAW_POLYGON &&
@@ -320,4 +318,4 @@ export class MapContainer extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(MapEditor);

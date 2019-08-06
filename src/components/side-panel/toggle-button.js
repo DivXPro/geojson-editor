@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Styled from 'styled-components';
-import SvgIcon from './commons/svg-icon';
+import SvgIcon from '../commons/svg-icon';
 import '@/styles/control-panel.scss';
 
 const StyledToggleButton = Styled.div`

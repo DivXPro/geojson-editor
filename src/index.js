@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
-import GeoJsonEditor from './components/geojson-editor';
+import GeoJsonEditorWrapper from './components/geojson-editor/geojson-editor-wrapper';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './index.css';
 import "./icons";
@@ -18,7 +18,7 @@ const initViewport = {
 };
 
 ReactDOM.render(
-  <GeoJsonEditor viewport={initViewport} />,
+  <GeoJsonEditorWrapper viewport={initViewport} />,
   document.getElementById('root')
 );
 
