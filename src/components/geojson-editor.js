@@ -12,7 +12,7 @@ import ControlPlanel from './control-panel';
 import SideBar from './side-panel/side-bar';
 
 const DRAW_LINE_STRING = 'drawLineString';
-const DRAW_PROLYGON = 'drawPolygon';
+const DRAW_POLYGON = 'drawPolygon';
 const DRAW_POINT = 'drawPoint';
 const DRAW_CIRCLE_FROM_CENTER = 'drawCircleFromCenter';
 const MODIFY_MODE = 'modify';
@@ -106,7 +106,9 @@ export default class GeoJsonEditor extends React.Component {
   }
 
   setEditMode(mode) {
-    this.setState({ mode });
+    if (this.state.selectedFeatureIndexes.length > 0) {
+      this.setState({ mode });
+    }
   }
 
   // 切割模式
@@ -143,9 +145,21 @@ export default class GeoJsonEditor extends React.Component {
   }
 
   handleDeckClick(e) {
-    if (this.state.mode === MODIFY_MODE) {
-      if (e.index === -1 && e.object == null)
-        this.setViewMode();
+    if (
+      this.state.mode !== DRAW_LINE_STRING &&
+      this.state.mode !== DRAW_POLYGON &&
+      this.state.mode !== DRAW_CIRCLE_FROM_CENTER &&
+      this.state.mode !== DRAW_POINT &&
+      this.state.mode !== CUT_MODE &&
+      this.state.mode !== SPLIT_MODE
+    ) {
+      if (e.index === -1 && e.object == null) {
+        this.setState({
+          currentIndex: null,
+          selectedFeatureIndexes: [],
+          mode: VIEW_MODE
+        });
+      }
     }
   }
 
@@ -182,7 +196,7 @@ export default class GeoJsonEditor extends React.Component {
       id: 'draw-layer',
       data: this.state.geo,
       selectedFeatureIndexes: this.state.selectedFeatureIndexes,
-      mode: this.state.mode === CUT_MODE ? DRAW_PROLYGON : this.state.mode,
+      mode: this.state.mode === CUT_MODE ? DRAW_POLYGON : this.state.mode,
       pickable: true,
       autoHighlight: true,
       lineWidthScale: 6,
@@ -193,12 +207,12 @@ export default class GeoJsonEditor extends React.Component {
       },
       onClick: ({ object, x, y, coordinate }) => {
         const index = this.state.geo.features.findIndex(d => d === object);
-        if (this.state.mode === VIEW_MODE) {
+        if (this.state.mode === VIEW_MODE || this.state.mode === TRANSLATE_MODE) {
           this.setState({
             selectedFeatureIndexes: [index],
             currentIndex: index,
             mode: TRANSLATE_MODE
-          })
+          });
         }
       },
       onEdit: ({ updatedData, editType, featureIndexes, editContext }) => {
@@ -252,8 +266,8 @@ export default class GeoJsonEditor extends React.Component {
       {
         text: 'Polygon',
         icon: 'sharp',
-        mode: DRAW_PROLYGON,
-        handle: this.setDrawMode.bind(this, DRAW_PROLYGON)
+        mode: DRAW_POLYGON,
+        handle: this.setDrawMode.bind(this, DRAW_POLYGON)
       },
       {
         text: 'Point',
