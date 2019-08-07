@@ -7,8 +7,8 @@ import { EditableGeoJsonLayer } from 'nebula.gl';
 import { GeoJsonLayer } from '@deck.gl/layers';
 import { setGeometry, setSelectFeatureIndexes, setMode, removeFeature } from '@/store/actions';
 import cutGeometry from '@/utils/cut-geometry';
+import SideBar from './side-bar';
 import ControlPlanel from '../control-panel';
-import SideBar from '../side-panel/side-bar';
 
 const DRAW_LINE_STRING = 'drawLineString';
 const DRAW_POLYGON = 'drawPolygon';
