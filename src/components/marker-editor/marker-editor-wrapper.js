@@ -26,7 +26,7 @@ export default class MarkerEditorWrapper extends React.Component {
             ],
             icon: 'marker'
           }
-        ]
+        ],
       },
       window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     );

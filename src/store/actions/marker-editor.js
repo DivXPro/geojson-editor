@@ -3,7 +3,10 @@
  */
 
 export const ADD_MARKER = 'ADD_MARKER';
+export const SET_MARKER = 'SET_MARKER';
 export const REMOVE_MARKER = 'REMOVE_MARKER';
+export const SET_CURRENT_MARKER = 'SET_CURRENT_MARKER';
+export const SET_CURRENT_COORDINATE = 'SET_CURRENT_COORDINATE';
 
 /*
  * action 创建函数
@@ -14,4 +17,16 @@ export function addMarker(marker) {
 
 export function removeMarker(id) {
   return { type: REMOVE_MARKER, id };
+}
+
+export function setCurrentMarker(marker) {
+  return { type: SET_CURRENT_MARKER, marker };
+}
+
+export function setCurrentCoordinate(coordinate) {
+  return { type: SET_CURRENT_COORDINATE, coordinate };
+}
+
+export function setMarker(marker) {
+  return { type: SET_MARKER, marker };
 }

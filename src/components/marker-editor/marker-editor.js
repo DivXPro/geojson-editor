@@ -1,12 +1,16 @@
 import React from 'react';
 import MapGL from 'react-map-gl';
+import { connect } from 'react-redux'
 import DeckGL from '@deck.gl/react';
 import uuidv4 from 'uuid/v4';
-import { connect } from 'react-redux'
-import { GlobalHotKeys } from 'react-hotkeys';
+import Immutable from 'immutable';
 import { GeoJsonLayer, IconLayer } from '@deck.gl/layers';
-import { addMarker } from '@/store/actions/marker-editor';
+import { GlobalHotKeys } from 'react-hotkeys';
+
+import { addMarker, setCurrentMarker } from '@/store/actions/marker-editor';
+import MarkerProperties from './marker-properties';
 import iconAtlas from '../../icon-atlas.png';
+import { Modal } from 'antd';
 
 const keyMap = {
   SHIFT_DOWN: { sequence: 'shift', action: 'keydown' },
@@ -24,13 +28,15 @@ const ICON_MAPPING = {
 function mapStateToProps(state) {
   return {
     markers: state.markers,
-    baseGeom: state.baseGeom
+    baseGeom: state.baseGeom,
+    currentMarker: state.currentMarker,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     addMarker: marker => dispatch(addMarker(marker)),
+    setCurrentMarker: marker => dispatch(setCurrentMarker(marker))
   }
 }
 
@@ -71,20 +77,34 @@ export class MarkerEditor extends React.Component {
     });
   }
 
+  handleAddMarker() {
+    this.props.addMarker(this.props.currentMarker);
+  }
+
+  handleSetCurrentMarkKV(key, value) {
+    this.props.setCurrentMarker(Immutable.set(this.props.currentMarker, key, value));
+  }
+
   handleDeckClick({ coordinate, index }) {
     if (index === -1) {
-      const marker = {
+      const defaultMarker = {
         id: uuidv4(),
+        icon: 'marker',
         coordinates: coordinate,
-        icon: 'marker'
       }
-      this.props.addMarker(marker);
+      this.props.setCurrentMarker(defaultMarker);
+      Modal.confirm({
+        title: 'New Marker',
+        icon: null,
+        content: <MarkerProperties marker={defaultMarker} onChange={this.handleSetCurrentMarkKV.bind(this)} />,
+        onOk: this.handleAddMarker.bind(this),
+      });
     }
   }
 
   render() {
     const markerLayer = new IconLayer({
-      id: 'icon-layer',
+      id: 'marker-layer',
       data: this.props.markers,
       pickable: true,
       // iconAtlas and iconMapping are required
