@@ -1,16 +1,21 @@
 import React from 'react';
 import MapGL from 'react-map-gl';
 import { connect } from 'react-redux'
+import { Modal } from 'antd';
 import DeckGL from '@deck.gl/react';
 import uuidv4 from 'uuid/v4';
 import Immutable from 'immutable';
 import { GeoJsonLayer, IconLayer } from '@deck.gl/layers';
 import { GlobalHotKeys } from 'react-hotkeys';
 
-import { addMarker, setCurrentMarker } from '@/store/actions/marker-editor';
+import { addMarker, setMarker, setCurrentMarker, setMode } from '@/store/actions/marker-editor';
 import MarkerProperties from './marker-properties';
 import iconAtlas from '../../icon-atlas.png';
-import { Modal } from 'antd';
+import ControlPlanel from '../control-panel';
+
+
+const VIEW_MODE = 'VIEW_MODE';
+const ADD_MARKER_MODE = 'ADD_MARKER_MODE';
 
 const keyMap = {
   SHIFT_DOWN: { sequence: 'shift', action: 'keydown' },
@@ -30,13 +35,16 @@ function mapStateToProps(state) {
     markers: state.markers,
     baseGeom: state.baseGeom,
     currentMarker: state.currentMarker,
+    mode: state.mode,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     addMarker: marker => dispatch(addMarker(marker)),
-    setCurrentMarker: marker => dispatch(setCurrentMarker(marker))
+    setMarker: marker => dispatch(setMarker(marker)),
+    setCurrentMarker: marker => dispatch(setCurrentMarker(marker)),
+    setMode: mode => dispatch(setMode(mode)),
   }
 }
 
@@ -46,6 +54,7 @@ export class MarkerEditor extends React.Component {
     this.state = {
       pointsRemovable: true,
       viewport: props.viewport,
+      interactive: true,
     }
   }
 
@@ -77,20 +86,43 @@ export class MarkerEditor extends React.Component {
     });
   }
 
+  get markers() {
+    return this.props.markers.map(marker => {
+      if (this.props.currentMarker && marker.id === this.props.currentMarker.id) {
+        return Object.assign({}, marker, { '_picked': true });
+      }
+      return marker;
+    })
+  }
+
   handleAddMarker() {
     this.props.addMarker(this.props.currentMarker);
+  }
+
+  handleSetMarker() {
+    this.props.setMarker(this.props.currentMarker);
   }
 
   handleSetCurrentMarkKV(key, value) {
     this.props.setCurrentMarker(Immutable.set(this.props.currentMarker, key, value));
   }
 
-  handleDeckClick({ coordinate, index }) {
-    if (index === -1) {
+  handleMarkerPicker({ index, object }) {
+    this.props.setCurrentMarker(object);
+    Modal.confirm({
+      title: 'Edit Marker',
+      icon: null,
+      content: <MarkerProperties marker={object} onChange={this.handleSetCurrentMarkKV.bind(this)} />,
+      onOk: this.handleSetMarker.bind(this),
+    });
+  }
+
+  createMarker(coordinates) {
+    if (this.props.mode === ADD_MARKER_MODE) {
       const defaultMarker = {
         id: uuidv4(),
         icon: 'marker',
-        coordinates: coordinate,
+        coordinates,
       }
       this.props.setCurrentMarker(defaultMarker);
       Modal.confirm({
@@ -102,27 +134,53 @@ export class MarkerEditor extends React.Component {
     }
   }
 
+  handleMarkerDrag({ coordinate, object }) {
+    this.props.setMarker(Immutable.set(object, 'coordinates', coordinate));
+  }
+
+  toggleInteractive(interactive: boolean) {
+    this.setState({ interactive });
+  }
+
+  handleDeckClick({ coordinate, index }) {
+    if (index === -1) {
+      this.createMarker(coordinate)
+    }
+  }
+  
+
   render() {
     const markerLayer = new IconLayer({
       id: 'marker-layer',
-      data: this.props.markers,
+      data: this.markers,
       pickable: true,
-      // iconAtlas and iconMapping are required
-      // getIcon: return a string
       iconAtlas: iconAtlas,
       iconMapping: ICON_MAPPING,
       getIcon: d => d.icon,
       sizeScale: 15,
       getPosition: d => d.coordinates,
       getSize: d => 3,
-      getColor: d => [144, 140, 0],
-      // onHover: ({ object, x, y }) => {
-      //   const tooltip = `${object.name}\n${object.address}`;
-      //   /* Update tooltip
-      //      http://deck.gl/#/documentation/developer-guide/adding-interactivity?section=example-display-a-tooltip-for-hovered-object
-      //   */
-      // }
+      getColor: d => d['_picked'] ? [44, 140, 0] : [144, 140, 0],
+      onClick: this.handleMarkerPicker.bind(this),
+      onDrag: this.handleMarkerDrag.bind(this),
+      onDragStart: this.toggleInteractive.bind(this, false),
+      onDragEnd: this.toggleInteractive.bind(this, true),
     });
+
+    const toggles = [
+      {
+        text: 'View',
+        icon: 'view_simple',
+        mode: VIEW_MODE,
+        handle: this.props.setMode.bind(this, VIEW_MODE)
+      },
+      {
+        text: 'Add Mark',
+        icon: 'pin_sharp_plus',
+        mode: ADD_MARKER_MODE,
+        handle: this.props.setMode.bind(this, ADD_MARKER_MODE)
+      }
+    ];
   
     const handleKeyPress = {
       // SHIFT_DOWN: this.shiftDownHandle.bind(this),
@@ -144,10 +202,11 @@ export class MarkerEditor extends React.Component {
             onClick={this.handleDeckClick.bind(this)}
             pickingRadius={5}
             layers={[markerLayer, this.baseLayer]}
-            controller={true}>
+            controller={this.state.interactive}>
             {this.renderStaticMap(this.state.viewport)}
           </DeckGL>
         </GlobalHotKeys>
+        <ControlPlanel toggles={toggles} />
       </React.Fragment>
     );
   }

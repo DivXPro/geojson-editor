@@ -6,7 +6,7 @@ import MarkerEditorView from './views/marker-editor-view';
 import * as serviceWorker from './serviceWorker';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './index.css';
-import "./icons";
+import './icons';
 
 function App(props) {
   return (
