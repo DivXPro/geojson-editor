@@ -1,10 +1,10 @@
 import React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux'
-import geometryApp from '@/store/reducers';
+import geometryApp from '@/store/reducers/geometry-app';
 import MapEditor from './map-editor';
 
-export class GeoJsonEditor extends React.Component {
+export default class GeoJsonEditor extends React.Component {
   constructor(props) {
     super(props);
     this.store = createStore(geometryApp, 
@@ -31,5 +31,3 @@ export class GeoJsonEditor extends React.Component {
     );
   }
 }
-
-export default GeoJsonEditor;

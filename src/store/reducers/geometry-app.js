@@ -1,5 +1,12 @@
 import Immutable from 'immutable';
-import { SET_GEOMETRY, SET_SELECT_FEATURE_INDEXES, ADD_FEATURE, SET_FEATURE, SET_BASE_GEOM, SET_MODE } from './actions';
+import {
+  SET_GEOMETRY,
+  SET_SELECT_FEATURE_INDEXES,
+  ADD_FEATURE,
+  SET_FEATURE,
+  SET_BASE_GEOM,
+  SET_MODE
+} from '../actions';
 
 function geometryApp (state, action) {
   switch (action.type) {

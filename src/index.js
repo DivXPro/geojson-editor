@@ -1,24 +1,32 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import ReactDOM from 'react-dom';
+import GeoEditorView from './views/geo-editor-view';
+import MarkerEditorView from './views/marker-editor-view';
 import * as serviceWorker from './serviceWorker';
-import GeoJsonEditorWrapper from './components/geojson-editor/geojson-editor-wrapper';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './index.css';
 import "./icons";
 
+function App(props) {
+  return (
+    <div>
+      <h1>GIS Worker</h1>
+      <ul>
+        <li><Link to="/geo_editor">GeoJSON Editor</Link></li>
+        <li><Link to="/marker_editor">Marker Editor</Link></li>
+      </ul>
+    </div>
+  );
+}
 
-const initViewport = {
-  bearing: 0,
-  height: 0,
-  latitude: 40,
-  longitude: 110,
-  pitch: 0,
-  width: 0,
-  zoom: 3
-};
 
 ReactDOM.render(
-  <GeoJsonEditorWrapper viewport={initViewport} />,
+  <Router>
+    <Route path="/" exact component={App} />
+    <Route path="/geo_editor" component={GeoEditorView} />
+    <Route path="/marker_editor" component={MarkerEditorView} />
+  </Router>,
   document.getElementById('root')
 );
 
