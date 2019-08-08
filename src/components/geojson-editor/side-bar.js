@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import PanelHeader from '../side-panel/panel-header';
-import FeatureProfile from '../side-panel/feature-profile';
-import LayerList from '../side-panel/layer-list';
+import FeatureProfile from './feature-profile';
+import LayerList from './layer-list';
 import StyledSidePanel from '../side-panel/side-panel';
 import exportJson from '@/utils/export-json';
-
+import JsonEditor from './json-editor';
 
 function SideBar (props) {
   const { geometry } = useSelector(state => ({
@@ -40,7 +40,7 @@ function SideBar (props) {
   return (
     <StyledSidePanel>
       <PanelHeader {...headerProps}></PanelHeader>
-      {activePanel === 'feature' && <FeatureProfile></FeatureProfile>}
+      {activePanel === 'feature' && <FeatureProfile content={JsonEditor}></FeatureProfile>}
       {activePanel === 'layers' && <LayerList></LayerList>}
     </StyledSidePanel>
   )

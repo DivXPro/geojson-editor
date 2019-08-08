@@ -11,7 +11,7 @@ import { GlobalHotKeys } from 'react-hotkeys';
 import { addMarker, setMarker, setCurrentMarker, setMode } from '@/store/actions/marker-editor';
 import MarkerProperties from './marker-properties';
 import iconAtlas from '../../icon-atlas.png';
-import ControlPlanel from '../control-panel';
+import ControlPlanel from '@/components/control-panel/control-panel';
 
 
 const VIEW_MODE = 'VIEW_MODE';
