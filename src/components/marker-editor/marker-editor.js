@@ -187,11 +187,6 @@ export class MarkerEditor extends React.Component {
     ];
   
     const handleKeyPress = {
-      // SHIFT_DOWN: this.shiftDownHandle.bind(this),
-      // ALT_DOWN: this.altDownHandle.bind(this),
-      // ALT_UP: this.altUpHandle.bind(this),
-      // DEL: this.delHandle.bind(this),
-      // ENTER: this.enterHandle.bind(this)
     };
 
     return (
