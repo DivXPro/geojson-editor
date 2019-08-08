@@ -1,7 +1,7 @@
 import React from 'react';
 import Styled from 'styled-components';
 import { useDispatch } from 'react-redux';
-import { setBaseGeom } from '@/store/actions';
+import { setBaseGeom } from '@/store/actions/geojson-editor';
 import UploadField from '@/components/commons/upload-field';
 
 const WrapperLayerList = Styled.section`

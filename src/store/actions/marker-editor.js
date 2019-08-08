@@ -8,7 +8,7 @@ export const REMOVE_MARKER = 'REMOVE_MARKER';
 export const SET_CURRENT_MARKER = 'SET_CURRENT_MARKER';
 export const SET_CURRENT_COORDINATE = 'SET_CURRENT_COORDINATE';
 export const SET_MODE = 'SET_MODE';
-
+export const SET_CURRENT_MARKER_ID = 'SET_CURRENT_MARKER_ID';
 /*
  * action 创建函数
  */
@@ -34,4 +34,8 @@ export function setMarker(marker) {
 
 export function setMode(mode) {
   return { type: SET_MODE, mode }
+}
+
+export function setCurrentMarkerId(id) {
+  return { type: SET_CURRENT_MARKER_ID, id }
 }

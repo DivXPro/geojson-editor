@@ -8,7 +8,7 @@ import Immutable from 'immutable';
 import { GeoJsonLayer, IconLayer } from '@deck.gl/layers';
 import { GlobalHotKeys } from 'react-hotkeys';
 
-import { addMarker, setMarker, setCurrentMarker, setMode } from '@/store/actions/marker-editor';
+import { addMarker, setMarker, setCurrentMarker, setCurrentMarkerId, setMode } from '@/store/actions/marker-editor';
 import MarkerProperties from './marker-properties';
 import iconAtlas from '../../icon-atlas.png';
 import ControlPlanel from '@/components/control-panel/control-panel';
@@ -36,6 +36,7 @@ function mapStateToProps(state) {
     baseGeom: state.baseGeom,
     currentMarker: state.currentMarker,
     mode: state.mode,
+    currentMarkerId: state.currentMarkerId,
   }
 }
 
@@ -44,6 +45,7 @@ function mapDispatchToProps(dispatch) {
     addMarker: marker => dispatch(addMarker(marker)),
     setMarker: marker => dispatch(setMarker(marker)),
     setCurrentMarker: marker => dispatch(setCurrentMarker(marker)),
+    setCurrentMarkerId: id => dispatch(setCurrentMarkerId(id)),
     setMode: mode => dispatch(setMode(mode)),
   }
 }
@@ -88,7 +90,7 @@ export class MarkerEditor extends React.Component {
 
   get markers() {
     return this.props.markers.map(marker => {
-      if (this.props.currentMarker && marker.id === this.props.currentMarker.id) {
+      if (marker.id === this.props.currentMarkerId) {
         return Object.assign({}, marker, { '_picked': true });
       }
       return marker;
@@ -108,13 +110,13 @@ export class MarkerEditor extends React.Component {
   }
 
   handleMarkerPicker({ index, object }) {
-    this.props.setCurrentMarker(object);
-    Modal.confirm({
-      title: 'Edit Marker',
-      icon: null,
-      content: <MarkerProperties marker={object} onChange={this.handleSetCurrentMarkKV.bind(this)} />,
-      onOk: this.handleSetMarker.bind(this),
-    });
+    this.props.setCurrentMarkerId(object.id);
+    // Modal.confirm({
+    //   title: 'Edit Marker',
+    //   icon: null,
+    //   content: <MarkerProperties marker={object} onChange={this.handleSetCurrentMarkKV.bind(this)} />,
+    //   onOk: this.handleSetMarker.bind(this),
+    // });
   }
 
   createMarker(coordinates) {
@@ -135,6 +137,7 @@ export class MarkerEditor extends React.Component {
   }
 
   handleMarkerDrag({ coordinate, object }) {
+    this.props.setCurrentMarkerId(object.id);
     this.props.setMarker(Immutable.set(object, 'coordinates', coordinate));
   }
 
@@ -144,6 +147,7 @@ export class MarkerEditor extends React.Component {
 
   handleDeckClick({ coordinate, index }) {
     if (index === -1) {
+      this.props.setCurrentMarkerId(null);
       this.createMarker(coordinate)
     }
   }

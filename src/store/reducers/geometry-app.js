@@ -6,7 +6,7 @@ import {
   SET_FEATURE,
   SET_BASE_GEOM,
   SET_MODE
-} from '../actions';
+} from '../actions/geojson-editor';
 
 function geometryApp (state, action) {
   switch (action.type) {

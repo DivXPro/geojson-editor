@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CodeEditor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
-import { setFeature } from '@/store/actions';
+import { setFeature } from '@/store/actions/geojson-editor';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-json';
 import 'prismjs/components/prism-markup';

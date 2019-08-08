@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { ADD_MARKER, SET_MARKER, REMOVE_MARKER, SET_CURRENT_MARKER, SET_CURRENT_COORDINATE, SET_MODE } from '../actions/marker-editor';
+import { ADD_MARKER, SET_MARKER, REMOVE_MARKER, SET_CURRENT_MARKER, SET_CURRENT_COORDINATE, SET_MODE, SET_CURRENT_MARKER_ID } from '../actions/marker-editor';
 
 function markerEditorApp(state, action) {
   switch (action.type) {
@@ -15,6 +15,8 @@ function markerEditorApp(state, action) {
       return Immutable.set(state, 'currentCoordinate', action.coordinate);
     case SET_MODE:
       return Immutable.set(state, 'mode', action.mode);
+    case SET_CURRENT_MARKER_ID:
+      return Immutable.set(state, 'currentMarkerId', action.id);
     default:
       return state;
   }
