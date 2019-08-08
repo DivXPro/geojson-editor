@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import exportJson from '@/utils/export-json';
 import PanelHeader from '../side-panel/panel-header';
 import FeatureProfile from './feature-profile';
 import LayerList from './layer-list';
 import StyledSidePanel from '../side-panel/side-panel';
-import exportJson from '@/utils/export-json';
 import JsonEditor from './json-editor';
 
 function SideBar (props) {
@@ -25,7 +25,7 @@ function SideBar (props) {
   }
 
   function exportGeometry() {
-    exportJson(JSON.stringify(geometry));
+    exportJson('marker.geojson', JSON.stringify(geometry));
   }
 
   const headerProps = {

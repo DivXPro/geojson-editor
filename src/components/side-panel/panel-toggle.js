@@ -40,7 +40,7 @@ const PanelTab = styled.div.attrs({
 function PanelToggle (props) {
   return (
     <PanelHeaderBottom>
-      {props.panels.map(panel => (
+      {props.panels && props.panels.map(panel => (
         <PanelTab
           key={panel.id}
           active={props.activePanel === panel.id}

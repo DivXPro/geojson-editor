@@ -12,7 +12,7 @@ import { addMarker, setMarker, setCurrentMarker, setMode } from '@/store/actions
 import MarkerProperties from './marker-properties';
 import iconAtlas from '../../icon-atlas.png';
 import ControlPlanel from '@/components/control-panel/control-panel';
-
+import SideBar from './side-bar';
 
 const VIEW_MODE = 'VIEW_MODE';
 const ADD_MARKER_MODE = 'ADD_MARKER_MODE';
@@ -207,6 +207,7 @@ export class MarkerEditor extends React.Component {
           </DeckGL>
         </GlobalHotKeys>
         <ControlPlanel toggles={toggles} />
+        <SideBar />
       </React.Fragment>
     );
   }
