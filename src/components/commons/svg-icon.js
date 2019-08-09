@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import Styled from 'styled-components';
-import '@/styles/svg.scss';
 
 const defaultStyle = {
   width: '30px',
@@ -22,7 +21,7 @@ function SvgIcon(props) {
       cursor: ${props.cursor};
     }
   `;
-  const { name, fill } = props;
+  const { name } = props;
   return (
     <StyledSvgIcon>
       <use xlinkHref={"#" + name} />
