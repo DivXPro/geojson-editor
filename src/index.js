@@ -1,6 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import ReactDOM from 'react-dom';
+import { ConfigProvider } from 'antd';
+import zhCN from 'antd/es/locale/zh_CN';
+
 import GeoEditorView from './views/geo-editor-view';
 import MarkerEditorView from './views/marker-editor-view';
 import * as serviceWorker from './serviceWorker';
@@ -22,11 +25,13 @@ function App(props) {
 
 
 ReactDOM.render(
-  <Router>
-    <Route path="/" exact component={App} />
-    <Route path="/geo_editor" component={GeoEditorView} />
-    <Route path="/marker_editor" component={MarkerEditorView} />
-  </Router>,
+  <ConfigProvider locale={zhCN}>
+    <Router>
+      <Route path="/" exact component={App} />
+      <Route path="/geo_editor" component={GeoEditorView} />
+      <Route path="/marker_editor" component={MarkerEditorView} />
+    </Router>
+  </ConfigProvider>,
   document.getElementById('root')
 );
 

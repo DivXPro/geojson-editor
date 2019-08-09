@@ -17,6 +17,7 @@ export default class GeoJsonEditor extends React.Component {
           type: 'FeatureCollection',
           features: []
         },
+        layers: [],
         selectedFeatureIndexes: [],
         mode: 'view',
       },

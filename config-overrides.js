@@ -11,6 +11,9 @@ module.exports = override(
   }),
   addLessLoader({
     javascriptEnabled: true,
-    modifyVars: darkTheme.default,
+    modifyVars: Object.assign({}, darkTheme.default, {
+      '@border-radius-base': '0',
+      '@border-radius-sm': '0',
+    }),
   }),
 );

@@ -111,12 +111,6 @@ export class MarkerEditor extends React.Component {
 
   handleMarkerPicker({ index, object }) {
     this.props.setCurrentMarkerId(object.id);
-    // Modal.confirm({
-    //   title: 'Edit Marker',
-    //   icon: null,
-    //   content: <MarkerProperties marker={object} onChange={this.handleSetCurrentMarkKV.bind(this)} />,
-    //   onOk: this.handleSetMarker.bind(this),
-    // });
   }
 
   createMarker(coordinates) {

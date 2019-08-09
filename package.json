@@ -30,6 +30,7 @@
     "proto-props": "^3.0.0",
     "react": "^16.8.6",
     "react-app-rewired": "^2.1.3",
+    "react-color": "^2.17.3",
     "react-dom": "^16.8.6",
     "react-hotkeys": "^2.0.0",
     "react-map-gl": "^5.0.7",

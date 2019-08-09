@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import exportJson from '@/utils/export-json';
 import PanelHeader from '../side-panel/panel-header';
 import FeatureProfile from './feature-profile';
-import LayerList from './layer-list';
+import LayerManager from './layer-manager';
 import StyledSidePanel from '../side-panel/side-panel';
 import JsonEditor from './json-editor';
 
@@ -41,7 +41,7 @@ function SideBar (props) {
     <StyledSidePanel>
       <PanelHeader {...headerProps}></PanelHeader>
       {activePanel === 'feature' && <FeatureProfile content={JsonEditor}></FeatureProfile>}
-      {activePanel === 'layers' && <LayerList></LayerList>}
+      {activePanel === 'layers' && <LayerManager></LayerManager>}
     </StyledSidePanel>
   )
 }

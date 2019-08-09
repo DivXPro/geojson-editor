@@ -1,12 +1,13 @@
 import React from 'react';
+import uuidv4 from 'uuid/v4';
 import Styled from 'styled-components';
-import { useDispatch } from 'react-redux';
-import { setBaseGeom } from '@/store/actions/geojson-editor';
+import { useDispatch, useSelector } from 'react-redux';
+import { addLayer, removeLayer, setBaseGeom } from '@/store/actions/geojson-editor';
 import UploadField from '@/components/commons/upload-field';
+import LayerItem from './layer-item';
 
-const WrapperLayerList = Styled.section`
+const StyledLayerManager = Styled.section`
   background: rgb(36, 39, 48);
-  padding: 16px;
   min-height 480px;
   .button {
     align-items: center;
@@ -29,30 +30,55 @@ const WrapperLayerList = Styled.section`
     outline: 0px;
     padding: 9px 12px;
     transition: all 0.4s ease 0s;
+    margin: 16px;
   }
 `
 
 
 function LayerList(props) {
   const dispatch = useDispatch();
+  const { layers } = useSelector(state => ({
+    layers: state.layers,
+  }));
   function updateGeom(files) {
     const reader = new FileReader();
+    const nameArr = files[0].name.split('.');
+    nameArr.pop();
+    const name = nameArr.join('.');
     reader.readAsText(files[0]);
     reader.onload = (e) => {
-      dispatch(setBaseGeom(JSON.parse(e.target.result)));
+      const layer = {
+        id: uuidv4(),
+        name,
+        data: JSON.parse(e.target.result),
+        pickable: false,
+        stroked: false,
+        filled: true,
+        extruded: true,
+        lineWidthScale: 6,
+        lineWidthMinPixels: 2,
+        lineWidthMaxPixels: 3,
+        getFillColor: [],
+        getRadius: 100,
+        getLineWidth: 2,
+        getElevation: 30,
+        hidden: false,
+      }
+      dispatch(addLayer(layer));
     }
   }
   return (
-    <WrapperLayerList>
+    <StyledLayerManager>
       <UploadField 
         onFiles={updateGeom}
         uploadProps={{
           accept: '.json,.geojson',
         }}
       >
-        <div className="button">添加底图</div>
+        <div className="button">添加新图层</div>
       </UploadField>
-    </WrapperLayerList>
+      {layers.map(layer => (<LayerItem key={layer.id} layer={layer} />))}
+    </StyledLayerManager>
   )
 }
 

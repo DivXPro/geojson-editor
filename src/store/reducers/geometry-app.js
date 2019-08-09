@@ -4,8 +4,11 @@ import {
   SET_SELECT_FEATURE_INDEXES,
   ADD_FEATURE,
   SET_FEATURE,
-  SET_BASE_GEOM,
-  SET_MODE
+  SET_MODE,
+  ADD_LAYER,
+  SET_LAYER,
+  REMOVE_LAYER,
+  REMOVE_FEATURE,
 } from '../actions/geojson-editor';
 
 function geometryApp (state, action) {
@@ -19,25 +22,19 @@ function geometryApp (state, action) {
         addFeature(state.geometry, action.feature),
       );
     case SET_SELECT_FEATURE_INDEXES:
-      return Immutable.set(
-        state,
-        'selectedFeatureIndexes',
-        action.indexes
-      );
+      return Immutable.set(state, 'selectedFeatureIndexes', action.indexes);
     case SET_FEATURE:
-      return Immutable.set(
-        state,
-        'geometry',
-        setFeature(state.geometry, action.index, action.feature),
-      );
-    case SET_BASE_GEOM:
-      return Immutable.set(
-        state,
-        'baseGeom',
-        action.data,
-      );
+      return Immutable.set(state, 'geometry', setFeature(state.geometry, action.index, action.feature));
+    case REMOVE_FEATURE:
+      return Immutable.set(state, 'geometry', removeFeature(state.geometry, action.index));
     case SET_MODE:
       return Immutable.set(state, 'mode', action.mode);
+    case ADD_LAYER:
+      return Immutable.set(state, 'layers', addLayer(state.layers, action.layer));
+    case SET_LAYER:
+      return Immutable.set(state, 'layers', setLayer(state.layers, action.layer));
+    case REMOVE_LAYER:
+      return Immutable.set(state, 'layers', removeLayer(state.layers, action.id));
     default:
       return state;
   }
@@ -57,6 +54,34 @@ function setFeature(geometry, index, feature) {
     'features',
     Immutable.set(geometry.features, index, feature),
   );
+}
+
+function removeFeature(geometry, index) {
+  return Immutable.set(
+    geometry,
+    'features',
+    Immutable.remove(geometry.features, index),
+  )
+}
+
+function addLayer(layers, layer) {
+  if (layers.findIndex(l => l.id === layer.id) === -1) {
+    return Immutable.set(layers, layers.length, layer);
+  }
+}
+
+function setLayer(layers, layer) {
+  const index = layers.findIndex(l => l.id === layer.id);
+  if (index > -1) {
+    return Immutable.set(layers, index, layer);
+  }
+}
+
+function removeLayer(layers, id) {
+  const index = layers.findIndex(l => l.id === id);
+  if (index > -1) {
+    return Immutable.remove(layers, index);
+  }
 }
 
 export default geometryApp;

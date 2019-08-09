@@ -37,7 +37,7 @@ function mapStateToProps(state) {
     geometry: state.geometry,
     mode: state.mode,
     selectedFeatureIndexes: state.selectedFeatureIndexes,
-    baseGeom: state.baseGeom
+    layers: state.layers,
   }
 }
 
@@ -66,10 +66,6 @@ export class MapEditor extends React.Component {
     return this.props.mode;
   }
 
-  get baseGeom() {
-    return this.props.baseGeom;
-  }
-
   get selectedFeatureIndexes() {
     return this.props.selectedFeatureIndexes;
   }
@@ -93,9 +89,11 @@ export class MapEditor extends React.Component {
   }
 
   delHandle() {
+    console.log('delHandle', this.selectedFeatureIndexes);
     if (this.selectedFeatureIndexes.length > 0) {
       this.selectedFeatureIndexes.forEach(idx => {
-        this.removeFeature(idx);
+        console.log('idx', idx);
+        this.props.removeFeature(idx);
       });
       this.setState({
         selectedFeatureIndexes: [],
@@ -156,22 +154,8 @@ export class MapEditor extends React.Component {
     />;
   }
 
-  get baseLayer() {
-    return new GeoJsonLayer({
-      id: 'geojson-layer',
-      data: this.baseGeom,
-      pickable: false,
-      stroked: false,
-      filled: true,
-      extruded: true,
-      lineWidthScale: 6,
-      lineWidthMinPixels: 2,
-      lineWidthMaxPixels: 3,
-      getFillColor: [160, 160, 180, 200],
-      getRadius: 100,
-      getLineWidth: 2,
-      getElevation: 30,
-    });
+  get layers() {
+    return this.props.layers.filter(layer => !layer.hidden).map(layer => new GeoJsonLayer(layer));
   }
 
   render() {
@@ -306,7 +290,7 @@ export class MapEditor extends React.Component {
             // getCursor={editableGeoJsonLayer.getCursor.bind(editableGeoJsonLayer)}
             onClick={this.handleDeckClick.bind(this)}
             pickingRadius={5}
-            layers={[editableGeoJsonLayer, this.baseLayer]}
+            layers={[editableGeoJsonLayer, ...this.layers]}
             controller={true}>
             {this.renderStaticMap(this.state.viewport)}
           </DeckGL>

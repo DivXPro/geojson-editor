@@ -7,8 +7,10 @@ export const ADD_FEATURE = 'ADD_FEATURE';
 export const SET_FEATURE = 'SET_FEATURE';
 export const REMOVE_FEATURE = 'REMOVE_FEATURE';
 export const SET_SELECT_FEATURE_INDEXES = 'SET_SELECT_FEATURE_INDEXES';
-export const SET_BASE_GEOM = 'SET_BASE_GEOM';
 export const SET_MODE = 'SET_MODE';
+export const ADD_LAYER = 'ADD_LAYER';
+export const REMOVE_LAYER = 'REMOVE_LAYER';
+export const SET_LAYER = 'SET_LAYER';
 
 /*
  * action 创建函数
@@ -30,13 +32,21 @@ export function removeFeature(index) {
 }
 
 export function setSelectFeatureIndexes(indexes) {
-  return { type: SET_SELECT_FEATURE_INDEXES, indexes }
-}
-
-export function setBaseGeom(data) {
-  return { type: SET_BASE_GEOM, data }
+  return { type: SET_SELECT_FEATURE_INDEXES, indexes };
 }
 
 export function setMode(mode) {
-  return { type: SET_MODE, mode }
+  return { type: SET_MODE, mode };
+}
+
+export function addLayer(layer) {
+  return { type: ADD_LAYER, layer };
+}
+
+export function removeLayer(id) {
+  return { type: REMOVE_LAYER, id };
+}
+
+export function setLayer(layer) {
+  return { type: SET_LAYER, layer };
 }

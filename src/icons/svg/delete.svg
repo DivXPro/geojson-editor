@@ -1,0 +1,10 @@
+
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="delete" stroke="none" stroke-width="1" fill="" fill-rule="evenodd">
+        <g transform="translate(-140.000000, -220.000000)" fill="">
+            <g id="icons" transform="translate(20.000000, 20.000000)">
+                <path d="M127,216 L129,216 L129,208 L127,208 L127,216 Z M131,216 L133,216 L133,208 L131,208 L131,216 Z M125,218 L135,218 L135,206 L125,206 L125,218 Z M127,204 L133,204 L133,202 L127,202 L127,204 Z M135,204 L135,200 L125,200 L125,204 L120,204 L120,206 L123,206 L123,220 L137,220 L137,206 L140,206 L140,204 L135,204 Z" id="delete-[#1487]"></path>
+            </g>
+        </g>
+    </g>
+</svg>
