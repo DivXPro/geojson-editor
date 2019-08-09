@@ -25,7 +25,7 @@ function SideBar (props) {
   }
 
   function exportGeometry() {
-    exportJson('marker.geojson', JSON.stringify(geometry));
+    exportJson('layer.geojson', JSON.stringify(geometry));
   }
 
   const headerProps = {
