@@ -1,6 +1,7 @@
 import React from 'react';
 import DeckGL from '@deck.gl/react';
 import MapGL from 'react-map-gl';
+import uuidv4 from 'uuid/v4';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { connect } from 'react-redux'
 import { EditableGeoJsonLayer } from 'nebula.gl';
@@ -189,6 +190,7 @@ export class MapEditor extends React.Component {
             updatedData = cutGeometry(updatedData, updatedData.features[featureIndexes[0]]);
             updatedSelectedFeatureIndexes = [];
             this.props.setMode(VIEW_MODE);
+            updatedData.features = updatedData.features.map(f => f.id ? f : Object.assign({}, f, { id: uuidv4() }));
             this.props.setGeometry(updatedData)
             this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
             return;
@@ -197,6 +199,8 @@ export class MapEditor extends React.Component {
             updatedSelectedFeatureIndexes = [...this.props.selectedFeatureIndexes, ...featureIndexes];
           }
         }
+        // console.log('updatedData', updatedData, updatedData.features.map(f => f.id ? f : Object.assign({}, f, { id: uuidv4() })));
+        updatedData.features = updatedData.features.map(f => f.id ? f : Object.assign({}, f, { id: uuidv4() }));
         this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
         this.props.setGeometry(updatedData);
       }
