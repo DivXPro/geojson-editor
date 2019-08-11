@@ -6,7 +6,7 @@ import { GlobalHotKeys } from 'react-hotkeys';
 import { connect } from 'react-redux'
 import { EditableGeoJsonLayer } from 'nebula.gl';
 import { GeoJsonLayer } from '@deck.gl/layers';
-import { setGeometry, setSelectFeatureIndexes, setMode, removeFeature } from '@/store/actions/geojson-editor';
+import { setGeometry, setSelectFeatureIndexes, setMode, removeFeature, loadDataset } from '@/store/actions/geojson-editor';
 import cutGeometry from '@/utils/cut-geometry';
 import SideBar from './side-bar';
 import ControlPlanel from '@/components/control-panel/control-panel';
@@ -48,6 +48,7 @@ function mapDispatchToProps(dispatch) {
     setSelectFeatureIndexes: indexes => dispatch(setSelectFeatureIndexes(indexes)),
     setMode: mode => dispatch(setMode(mode)),
     removeFeature: index => dispatch(removeFeature(index)),
+    loadDataset: datasetId => dispatch(loadDataset(datasetId)),
   }
 }
 
@@ -90,10 +91,8 @@ export class MapEditor extends React.Component {
   }
 
   delHandle() {
-    console.log('delHandle', this.selectedFeatureIndexes);
     if (this.selectedFeatureIndexes.length > 0) {
       this.selectedFeatureIndexes.forEach(idx => {
-        console.log('idx', idx);
         this.props.removeFeature(idx);
       });
       this.setState({
@@ -101,7 +100,6 @@ export class MapEditor extends React.Component {
       });
     }
   }
-
 
   setViewMode() {
     this.props.setMode(VIEW_MODE);
@@ -199,7 +197,6 @@ export class MapEditor extends React.Component {
             updatedSelectedFeatureIndexes = [...this.props.selectedFeatureIndexes, ...featureIndexes];
           }
         }
-        // console.log('updatedData', updatedData, updatedData.features.map(f => f.id ? f : Object.assign({}, f, { id: uuidv4() })));
         updatedData.features = updatedData.features.map(f => f.id ? f : Object.assign({}, f, { id: uuidv4() }));
         this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
         this.props.setGeometry(updatedData);

@@ -11,6 +11,9 @@ export const SET_MODE = 'SET_MODE';
 export const ADD_LAYER = 'ADD_LAYER';
 export const REMOVE_LAYER = 'REMOVE_LAYER';
 export const SET_LAYER = 'SET_LAYER';
+export const LOAD_DATASET = 'LOAD_DATASET';
+export const LOAD_DATASET_DATA = 'LOAD_DATASET';
+// mapbox api 相关
 
 /*
  * action 创建函数
@@ -49,4 +52,8 @@ export function removeLayer(id) {
 
 export function setLayer(layer) {
   return { type: SET_LAYER, layer };
+}
+
+export function loadDataset(datasetId) {
+  return { type: LOAD_DATASET_DATA, datasetId }
 }

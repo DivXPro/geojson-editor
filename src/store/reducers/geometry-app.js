@@ -11,7 +11,17 @@ import {
   REMOVE_FEATURE,
 } from '../actions/geojson-editor';
 
-function geometryApp (state, action) {
+const initState = {
+  geometry: {
+    type: 'FeatureCollection',
+    features: []
+  },
+  layers: [],
+  selectedFeatureIndexes: [],
+  mode: 'view',
+};
+
+function geometryApp(state = initState, action) {
   switch (action.type) {
     case SET_GEOMETRY:
       return Immutable.set(state, 'geometry', action.geometry);

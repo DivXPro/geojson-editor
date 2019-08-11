@@ -69,10 +69,6 @@ function LayerItem(props) {
     setDisplayColorPicker(true);
   }
 
-  const handleToggle = () => {
-    setDisplayColorPicker(true);
-  }
-
   return <StyledLayerItem>
     <div className="thumbnail" style={{ backgroundColor: props.layer.color || '#000' }} onClick={handleClick.bind(this)}></div>
     <div className="name">{props.layer.name}</div>
