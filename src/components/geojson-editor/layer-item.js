@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { SketchPicker } from 'react-color';
+import exportJson from '@/utils/export-json';
 import { setLayer, removeLayer } from '@/store/actions/geojson-editor';
 import SvgIcon from '../commons/svg-icon';
 
@@ -75,6 +76,10 @@ function LayerItem(props) {
     setDisplayColorPicker(true);
   }
 
+  const handleExport = () => {
+    exportJson('layer.geojson', JSON.stringify(props.layer.data));
+  }
+
   return <StyledLayerItem>
     <div className="thumbnail" style={{ backgroundColor: props.layer.color || '#000' }} onClick={handleClick.bind(this)}></div>
     <div className="name">{props.layer.name}</div>
@@ -89,7 +94,7 @@ function LayerItem(props) {
     <div onClick={toggleLayerDisplay.bind(this)} className="operator">
       <SvgIcon fill="rgb(106,116,133)" hoverFill="white" cursor="pointer" name={ props.layer.hidden ? 'hidden': 'view_simple' } />
     </div>
-    <div onClick={toggleLayerDisplay.bind(this)} className="operator">
+    <div onClick={handleExport.bind(this)} className="operator">
       <SvgIcon fill="rgb(106,116,133)" hoverFill="white" cursor="pointer" name="download" />
     </div>
     <div onClick={handleRemoveLayer.bind(this)} className="operator">
