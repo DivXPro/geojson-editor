@@ -166,6 +166,9 @@ export class MapEditor extends React.Component {
     const editableGeoJsonLayer = new EditableGeoJsonLayer(Object.assign({}, this.currentLayer, {
       selectedFeatureIndexes: this.selectedFeatureIndexes,
       mode: this.mode === CUT_MODE ? DRAW_POLYGON : this.mode,
+      lineWidthScale: 2,
+      lineWidthMinPixels: 1,
+      lineWidthMaxPixels: 2,
       pickable: true,
       onHover: ({ object, x, y, coordinate }) => {
         // const index = this.state.geo.features.findIndex(d => d === object);
@@ -196,6 +199,7 @@ export class MapEditor extends React.Component {
             updatedSelectedFeatureIndexes = [...this.props.selectedFeatureIndexes, ...featureIndexes];
           }
         }
+        console.log('updatedData', updatedData, editContext);
         updatedData.features = updatedData.features.map(f => f.id ? f : Object.assign({}, f, { id: uuidv4() }));
         this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
         this.props.setGeometry(updatedData);

@@ -23,9 +23,9 @@ const defaultLayer = {
   autoHighlight: true,
   color: '#fbe4e6',
   getFillColor: [251, 228, 230, 100],
-  lineWidthScale: 6,
-  lineWidthMinPixels: 2,
-  lineWidthMaxPixels: 3,
+  lineWidthScale: 2,
+  lineWidthMinPixels: 1,
+  lineWidthMaxPixels: 2,
 };
 
 const initState = {
