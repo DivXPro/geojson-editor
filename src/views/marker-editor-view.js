@@ -8,7 +8,7 @@ const initViewport = {
   longitude: 110,
   pitch: 0,
   width: 0,
-  zoom: 3
+  zoom: 10
 };
 
 function MarkerEditorView(props) {

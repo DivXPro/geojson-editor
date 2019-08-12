@@ -21,6 +21,8 @@ const defaultLayer = {
   },
   pickable: true,
   autoHighlight: true,
+  color: '#fbe4e6',
+  getFillColor: [251, 228, 230, 100],
   lineWidthScale: 6,
   lineWidthMinPixels: 2,
   lineWidthMaxPixels: 3,
@@ -51,9 +53,9 @@ function geometryApp(state = initState, action) {
     case SET_SELECT_FEATURE_INDEXES:
       return Immutable.set(state, 'selectedFeatureIndexes', action.indexes);
     case SET_FEATURE:
-      return Immutable.set(state, 'geometry', setFeature(state.geometry, action.index, action.feature));
+      return Immutable.set(state, 'layers', setFeature(state.layers, state.currentLayerId, action.index, action.feature));
     case REMOVE_FEATURE:
-      return Immutable.set(state, 'geometry', removeFeature(state.geometry, action.index));
+      return Immutable.set(state, 'layers', removeFeature(state.layers, state.currentLayerId, action.index));
     case SET_MODE:
       return Immutable.set(state, 'mode', action.mode);
     case ADD_LAYER:
@@ -75,19 +77,21 @@ function addFeature(geometry, feature) {
   );
 }
 
-function setFeature(geometry, index, feature) {
+function setFeature(layers, id, index, feature) {
+  const layerIndex = layers.find(l => l.id === id);
   return Immutable.set(
-    geometry,
-    'features',
-    Immutable.set(geometry.features, index, feature),
+    layers,
+    layerIndex,
+    Immutable.set(layers[layerIndex], 'data', Immutable.set(layers[layerIndex].data, 'features', Immutable.set(layers[layerIndex].data.features, index, feature))),
   );
 }
 
-function removeFeature(geometry, index) {
+function removeFeature(layers, id, index) {
+  const layerIndex = layers.findIndex(l => l.id === id);
   return Immutable.set(
-    geometry,
-    'features',
-    Immutable.remove(geometry.features, index),
+    layers,
+    layerIndex,
+    Immutable.set(layers[layerIndex], 'data', Immutable.set(layers[layerIndex].data, 'features', Immutable.remove(layers[layerIndex].data.features, index))),
   )
 }
 

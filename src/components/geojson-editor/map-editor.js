@@ -203,7 +203,7 @@ export class MapEditor extends React.Component {
         this.props.setGeometry(updatedData);
       }
     }));
-
+    console.log('render', this.currentLayer);
 
     const handleKeyPress = {
       SHIFT_DOWN: this.shiftDownHandle.bind(this),

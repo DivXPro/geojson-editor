@@ -22,7 +22,6 @@ function SideBar (props) {
     activePanel,
     togglePanel,
     title: 'GeoJSON Editor',
-    action: '导出',
   }
 
   return (

@@ -10,9 +10,9 @@ import 'prismjs/themes/prism-tomorrow.css'
 
 export default function JsonEditor() {
   const dispatch = useDispatch();
-  const { index, feature } = useSelector(state => ({
+  const { index, currentLayer } = useSelector(state => ({
     index: state.selectedFeatureIndexes[0],
-    feature: JSON.stringify(state.geometry.features[state.selectedFeatureIndexes[0]]),
+    currentLayer: state.layers.find(l => l.id === state.currentLayerId)
   }));
 
   function setCurrentFeature(data) {
@@ -20,9 +20,9 @@ export default function JsonEditor() {
   }
 
   return (
-      (index != null && index > -1 && feature) ?
+      (index != null && index > -1 && currentLayer) ?
       <CodeEditor
-        value={feature}
+        value={JSON.stringify(currentLayer.data.features[index])}
         onValueChange={setCurrentFeature}
         highlight={data => highlight(data, languages.json)}
         padding={10}
@@ -36,6 +36,6 @@ export default function JsonEditor() {
           maxHeight: '380px',
           outline: 'none'
         }}
-      /> : <div></div>
+      /> : null
   )
 }
