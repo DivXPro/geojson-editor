@@ -56,6 +56,7 @@ function LayerItem(props) {
     dispatch(
       setLayer(Object.assign({}, props.layer, {
         color: color.hex,
+        getLineColor: [color.rgb.r, color.rgb.g, color.rgb.b, color.rgb.a * 100],
         getFillColor: [color.rgb.r, color.rgb.g, color.rgb.b, color.rgb.a * 100],
       }))
     );

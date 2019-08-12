@@ -4,6 +4,7 @@ import FeatureProfile from './feature-profile';
 import LayerManager from './layer-manager';
 import StyledSidePanel from '../side-panel/side-panel';
 import JsonEditor from './json-editor';
+import Property from './property';
 
 function SideBar (props) {
   const panels = [
@@ -27,7 +28,7 @@ function SideBar (props) {
   return (
     <StyledSidePanel>
       <PanelHeader {...headerProps}></PanelHeader>
-      {activePanel === 'feature' && <FeatureProfile content={JsonEditor}></FeatureProfile>}
+      {activePanel === 'feature' && <FeatureProfile content={Property}></FeatureProfile>}
       {activePanel === 'layers' && <LayerManager></LayerManager>}
     </StyledSidePanel>
   )

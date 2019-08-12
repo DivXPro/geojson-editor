@@ -26,6 +26,7 @@
     "customize-cra": "^0.4.1",
     "deck.gl": "^7.1.10",
     "immutable": "^4.0.0-rc.12",
+    "lodash": "^4.17.15",
     "nebula.gl": "^0.14.0",
     "prismjs": "^1.17.1",
     "proto-props": "^3.0.0",
