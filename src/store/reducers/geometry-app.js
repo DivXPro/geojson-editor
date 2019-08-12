@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import uuidv4 from 'uuid/v4';
 import {
   SET_GEOMETRY,
   SET_SELECT_FEATURE_INDEXES,
@@ -11,12 +12,27 @@ import {
   REMOVE_FEATURE,
 } from '../actions/geojson-editor';
 
+const defaultLayer = {
+  id: uuidv4(),
+  name: 'untitled',
+  data: {
+    type: 'FeatureCollection',
+    features: []
+  },
+  pickable: true,
+  autoHighlight: true,
+  lineWidthScale: 6,
+  lineWidthMinPixels: 2,
+  lineWidthMaxPixels: 3,
+};
+
 const initState = {
   geometry: {
     type: 'FeatureCollection',
     features: []
   },
-  layers: [],
+  layers: [defaultLayer],
+  currentLayerId: defaultLayer.id,
   selectedFeatureIndexes: [],
   mode: 'view',
 };
@@ -24,7 +40,8 @@ const initState = {
 function geometryApp(state = initState, action) {
   switch (action.type) {
     case SET_GEOMETRY:
-      return Immutable.set(state, 'geometry', action.geometry);
+      return Immutable.set(state, 'layers', setLayerData(state.layers, state.currentLayerId, action.geometry));
+      // return Immutable.set(state, 'geometry', action.geometry);
     case ADD_FEATURE:
       return Immutable.set(
         state,
@@ -85,6 +102,11 @@ function setLayer(layers, layer) {
   if (index > -1) {
     return Immutable.set(layers, index, layer);
   }
+}
+
+function setLayerData(layers, id, data) {
+  const index = layers.findIndex(l => l.id === id);
+  return setLayer(layers, Immutable.set(layers[index], 'data', data))
 }
 
 function removeLayer(layers, id) {

@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import PanelToggle from './panel-toggle';
+import SetupProfile from '../setup/setup-profile';
 
-const StyledPanelHeader = styled.div`
+const StyledPanelHeader = styled.div.attrs({
+  className: 'panel-header'
+})`
   padding: 10px 16px;
   background-color: rgb(41, 50, 60);
   display: flex;
   justify-content: space-between;
-  .logo-title {
+  .panel-header__logo-title {
     font-size: 14px;
     font-weight: 600;
     color: rgb(31, 186, 214);
@@ -16,7 +19,7 @@ const StyledPanelHeader = styled.div`
     align-items: center;
     padding: 5px;
   }
-  .action {
+  .panel-header__action {
     font-size: 14px;
     text-align: center;
     color: rgb(106, 116, 133);
@@ -33,18 +36,20 @@ const StyledPanelHeader = styled.div`
 
 
 function PanelHeader(props) {
+  const [showSetup, setShowSetup] = useState(false);
 
   return (
     <React.Fragment>
       <StyledPanelHeader>
-        <div className="logo-title">{props.title}</div>
-        <div className="action" onClick={props.onAction}>{props.action}</div>
+        <div className="panel-header__logo-title">{props.title}</div>
+        <div className="panel-header__action" onClick={e => setShowSetup(true)}>设置</div>
       </StyledPanelHeader>
       <PanelToggle
         activePanel={props.activePanel}
         panels={props.panels}
         togglePanel={props.togglePanel}
       />
+      <SetupProfile visible={showSetup} finish={e => setShowSetup(false)} />
     </React.Fragment>
   );
 }

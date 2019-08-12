@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { SketchPicker } from 'react-color';
-import { setLayer } from '@/store/actions/geojson-editor';
+import { setLayer, removeLayer } from '@/store/actions/geojson-editor';
 import SvgIcon from '../commons/svg-icon';
 
 const StyledLayerItem = Styled.div`
@@ -50,6 +50,7 @@ const StyledLayerItem = Styled.div`
 function LayerItem(props) {
   const dispatch = useDispatch();
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
+
   const handlePickColor = (color) => {
     dispatch(
       setLayer(Object.assign({}, props.layer, {
@@ -62,6 +63,11 @@ function LayerItem(props) {
   const toggleLayerDisplay = () => {
     dispatch(setLayer(Object.assign({}, props.layer, { hidden: !props.layer.hidden })));
   }
+
+  const handleRemoveLayer = () => {
+    dispatch(removeLayer(props.layer.id));
+  }
+
   const handleClose = () => {
     setDisplayColorPicker(false);
   }
@@ -84,6 +90,9 @@ function LayerItem(props) {
       <SvgIcon fill="rgb(106,116,133)" hoverFill="white" cursor="pointer" name={ props.layer.hidden ? 'hidden': 'view_simple' } />
     </div>
     <div onClick={toggleLayerDisplay.bind(this)} className="operator">
+      <SvgIcon fill="rgb(106,116,133)" hoverFill="white" cursor="pointer" name="download" />
+    </div>
+    <div onClick={handleRemoveLayer.bind(this)} className="operator">
       <SvgIcon fill="rgb(106,116,133)" hoverFill="#ff4d4f" cursor="pointer" name="delete" />
     </div>
   </StyledLayerItem>

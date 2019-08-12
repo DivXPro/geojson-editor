@@ -2,6 +2,7 @@ import React from 'react';
 import DeckGL from '@deck.gl/react';
 import MapGL from 'react-map-gl';
 import uuidv4 from 'uuid/v4';
+import Immutable from 'immutable'
 import { GlobalHotKeys } from 'react-hotkeys';
 import { connect } from 'react-redux'
 import { EditableGeoJsonLayer } from 'nebula.gl';
@@ -39,6 +40,7 @@ function mapStateToProps(state) {
     mode: state.mode,
     selectedFeatureIndexes: state.selectedFeatureIndexes,
     layers: state.layers,
+    currentLayerId: state.currentLayerId,
   }
 }
 
@@ -60,6 +62,7 @@ export class MapEditor extends React.Component {
       viewport: props.viewport,
     }
   }
+
   get geometry() {
     return this.props.geometry;
   }
@@ -154,25 +157,23 @@ export class MapEditor extends React.Component {
   }
 
   get layers() {
-    return this.props.layers.filter(layer => !layer.hidden).map(layer => new GeoJsonLayer(layer));
+    return this.props.layers.filter(layer => !layer.hidden && layer.id !== this.props.currentLayerId).map(layer => new GeoJsonLayer(layer));
+  }
+
+  get currentLayer() {
+    return this.props.layers.find(layer => layer.id === this.props.currentLayerId);
   }
 
   render() {
-    const editableGeoJsonLayer = new EditableGeoJsonLayer({
-      id: 'draw-layer',
-      data: this.geometry,
+    const editableGeoJsonLayer = new EditableGeoJsonLayer(Object.assign({}, this.currentLayer, {
       selectedFeatureIndexes: this.selectedFeatureIndexes,
       mode: this.mode === CUT_MODE ? DRAW_POLYGON : this.mode,
       pickable: true,
-      autoHighlight: true,
-      lineWidthScale: 6,
-      lineWidthMinPixels: 2,
-      lineWidthMaxPixels: 3,
       onHover: ({ object, x, y, coordinate }) => {
         // const index = this.state.geo.features.findIndex(d => d === object);
       },
       onClick: ({ object, x, y, coordinate }) => {
-        const index = this.props.geometry.features.findIndex(d => d === object);
+        const index = this.currentLayer.data.features.findIndex(d => d === object);
         if (this.mode === VIEW_MODE || this.mode === TRANSLATE_MODE) {
           this.props.setSelectFeatureIndexes([index]);
           this.props.setMode(TRANSLATE_MODE);
@@ -201,7 +202,8 @@ export class MapEditor extends React.Component {
         this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
         this.props.setGeometry(updatedData);
       }
-    });
+    }));
+
 
     const handleKeyPress = {
       SHIFT_DOWN: this.shiftDownHandle.bind(this),

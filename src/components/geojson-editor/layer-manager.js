@@ -2,7 +2,7 @@ import React from 'react';
 import uuidv4 from 'uuid/v4';
 import Styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { addLayer, removeLayer, setBaseGeom } from '@/store/actions/geojson-editor';
+import { addLayer, removeLayer } from '@/store/actions/geojson-editor';
 import UploadField from '@/components/commons/upload-field';
 import LayerItem from './layer-item';
 
@@ -40,7 +40,7 @@ function LayerList(props) {
   const { layers } = useSelector(state => ({
     layers: state.layers,
   }));
-  function updateGeom(files) {
+ const updateGeom = (files) => {
     const reader = new FileReader();
     const nameArr = files[0].name.split('.');
     nameArr.pop();
