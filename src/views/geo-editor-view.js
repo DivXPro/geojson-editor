@@ -4,11 +4,11 @@ import GeoJsonEditorWrapper from '../components/geojson-editor/geojson-editor-wr
 const initViewport = {
   bearing: 0,
   height: 0,
-  latitude: 40,
-  longitude: 110,
+  latitude: 30.901,
+  longitude: 121.936,
   pitch: 0,
   width: 0,
-  zoom: 10
+  zoom: 14
 };
 
 function GeoEditorView(props) {

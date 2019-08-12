@@ -2,7 +2,6 @@ import React from 'react';
 import DeckGL from '@deck.gl/react';
 import MapGL from 'react-map-gl';
 import uuidv4 from 'uuid/v4';
-import Immutable from 'immutable'
 import { GlobalHotKeys } from 'react-hotkeys';
 import { connect } from 'react-redux'
 import { EditableGeoJsonLayer } from 'nebula.gl';
@@ -17,7 +16,6 @@ const DRAW_POLYGON = 'drawPolygon';
 const DRAW_POINT = 'drawPoint';
 const DRAW_CIRCLE_FROM_CENTER = 'drawCircleFromCenter';
 const MODIFY_MODE = 'modify';
-const EXTRUDE_MODE = 'extrude';
 const SPLIT_MODE = 'split'
 const SCALE_MODE = 'scale';
 const ROTATE_MODE = 'rotate';
@@ -151,7 +149,7 @@ export class MapEditor extends React.Component {
       width="100%"
       height="100%"
       {...viewport}
-      mapStyle="mapbox://styles/mapbox/light-v9"
+      mapStyle="mapbox://styles/mapbox/streets-v10"
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN || 'pk.eyJ1IjoiZGl2eCIsImEiOiJtdzN3dndvIn0.LKwcY4HJPVItRlDBfNodTw'}
     />;
   }
@@ -203,7 +201,6 @@ export class MapEditor extends React.Component {
         this.props.setGeometry(updatedData);
       }
     }));
-    console.log('render', this.currentLayer);
 
     const handleKeyPress = {
       SHIFT_DOWN: this.shiftDownHandle.bind(this),
