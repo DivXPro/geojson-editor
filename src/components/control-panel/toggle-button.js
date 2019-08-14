@@ -27,10 +27,15 @@ const StyledToggleButton = Styled.div`
     background-color: rgb(160, 167, 180);
   }
 `
-
+function isActive(currentMode, mode) {
+  if (typeof currentMode === 'string') {
+    return currentMode === mode;
+  }
+  return currentMode.findIndex(m => m === mode) > -1;
+}
 function ToggleButton(props) {
   return (
-    <StyledToggleButton className={classNames({active: props.data.mode === props.mode})} onClick={props.data.handle}>
+    <StyledToggleButton className={classNames({ active: isActive(props.data.mode, props.mode)})} onClick={props.data.handle}>
       <SvgIcon name={props.data.icon} />
     </StyledToggleButton>
   );

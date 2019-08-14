@@ -43,13 +43,9 @@ function geometryApp(state = initState, action) {
   switch (action.type) {
     case SET_GEOMETRY:
       return Immutable.set(state, 'layers', setLayerData(state.layers, state.currentLayerId, action.geometry));
-      // return Immutable.set(state, 'geometry', action.geometry);
     case ADD_FEATURE:
-      return Immutable.set(
-        state,
-        'geometry',
-        addFeature(state.geometry, action.feature),
-      );
+      console.log('ADD_FEATURE', action);
+      return Immutable.set(state, 'layers', addFeature(state.layers, state.currentLayerId, action.feature));
     case SET_SELECT_FEATURE_INDEXES:
       return Immutable.set(state, 'selectedFeatureIndexes', action.indexes);
     case SET_FEATURE:
@@ -69,16 +65,25 @@ function geometryApp(state = initState, action) {
   }
 }
 
-function addFeature(geometry, feature) {
-  return Immutable.set(
-    geometry,
-    'features',
-    Immutable.set(geometry.features, geometry.features.length, feature),
-  );
+function addFeature(layers, id, feature) {
+  const layer = layers.find(l => l.id === id);
+  console.log('new fs', id, feature);
+
+  const features = Immutable.List(layer.data.features).toJS();
+  if (Array.isArray(feature)) {
+    console.log('feature is array');
+    features.push(...feature);
+  } else {
+    features.push(feature);
+  }
+  console.log('add fs to layer', features);
+  const data = Immutable.set(layer.data, 'features', features);
+  console.log('data', data);
+  return setLayer(layers, Immutable.set(layer, 'data', data));
 }
 
 function setFeature(layers, id, index, feature) {
-  const layerIndex = layers.find(l => l.id === id);
+  const layerIndex = layers.findIndex(l => l.id === id);
   return Immutable.set(
     layers,
     layerIndex,

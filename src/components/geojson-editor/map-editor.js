@@ -6,13 +6,14 @@ import { GlobalHotKeys } from 'react-hotkeys';
 import { connect } from 'react-redux'
 import { EditableGeoJsonLayer } from 'nebula.gl';
 import { GeoJsonLayer } from '@deck.gl/layers';
-import { setGeometry, setSelectFeatureIndexes, setMode, removeFeature, loadDataset } from '@/store/actions/geojson-editor';
+import { setGeometry, setSelectFeatureIndexes, setMode, removeFeature, loadDataset, addFeature } from '@/store/actions/geojson-editor';
 import cutGeometry from '@/utils/cut-geometry';
 import SideBar from './side-bar';
 import ControlPlanel from '@/components/control-panel/control-panel';
 
 const DRAW_LINE_STRING = 'drawLineString';
 const DRAW_POLYGON = 'drawPolygon';
+const DRAW_90_DEGREE_POLYGON = 'draw90DegreePolygon'
 const DRAW_POINT = 'drawPoint';
 const DRAW_CIRCLE_FROM_CENTER = 'drawCircleFromCenter';
 const MODIFY_MODE = 'modify';
@@ -24,9 +25,10 @@ const VIEW_MODE = 'view';
 const CUT_MODE = 'cut';
 
 const keyMap = {
-  SHIFT_DOWN: { sequence: 'shift', action: 'keydown' },
-  SHIFT_UP: { sequence: 'shift', action: 'keyup' },
+  SHIFT: 'shift',
   ALT_DOWN: { sequence: 'alt', action: 'keydown' },
+  CTRL_AND_C: ['ctrl+c', 'command+c'],
+  CTRL_AND_V: ['ctrl+v', 'command+v'],
   ALT_UP: { sequence: 'alt', action: 'keyup' },
   ENTER: 'enter',
   DEL: ['del', 'backspace']
@@ -49,6 +51,7 @@ function mapDispatchToProps(dispatch) {
     setMode: mode => dispatch(setMode(mode)),
     removeFeature: index => dispatch(removeFeature(index)),
     loadDataset: datasetId => dispatch(loadDataset(datasetId)),
+    addFeature: features => dispatch(addFeature(features)),
   }
 }
 
@@ -58,6 +61,7 @@ export class MapEditor extends React.Component {
     this.state = {
       pointsRemovable: true,
       viewport: props.viewport,
+      copyFeatures: null
     }
   }
 
@@ -73,9 +77,6 @@ export class MapEditor extends React.Component {
     return this.props.selectedFeatureIndexes;
   }
 
-  shiftDownHandle(e) {
-    // TODO:
-  }
 
   enterHandle() {
     if (this.mode !== VIEW_MODE) {
@@ -84,11 +85,42 @@ export class MapEditor extends React.Component {
   }
 
   altDownHandle() {
-    this.setMode(DRAW_LINE_STRING);
+    this.props.setMode(DRAW_LINE_STRING);
   }
 
   altUpHandle() {
     this.setViewMode();
+  }
+
+  shiftHandle() {
+    if (this.mode === DRAW_POLYGON) {
+      this.props.setMode(DRAW_90_DEGREE_POLYGON);
+    } else if (this.mode === DRAW_90_DEGREE_POLYGON) {
+      this.props.setMode(DRAW_POLYGON);
+    }
+  }
+
+  ctrlAndCHandle() {
+    this.copyFeature();
+  }
+
+  ctrlAndVHandle() {
+    this.pasteFeature();
+  }
+
+  copyFeature() {
+    if (this.selectedFeatureIndexes.length > 0 && this.currentLayer) {
+      const features = this.currentLayer.data.features.filter((f, fidx) => this.selectedFeatureIndexes.findIndex(idx => idx === fidx) > -1);
+      this.setState({
+        copyFeatures: features.map(f => ({ ...f, id: uuidv4()}))
+      });
+    }
+  }
+
+  pasteFeature() {
+    if (this.state.copyFeatures != null && this.state.copyFeatures.length > 0) {
+      this.props.addFeature(this.state.copyFeatures)
+    }
   }
 
   delHandle() {
@@ -130,12 +162,7 @@ export class MapEditor extends React.Component {
 
   handleDeckClick(e) {
     if (
-      this.mode !== DRAW_LINE_STRING &&
-      this.mode !== DRAW_POLYGON &&
-      this.mode !== DRAW_CIRCLE_FROM_CENTER &&
-      this.mode !== DRAW_POINT &&
-      this.mode !== CUT_MODE &&
-      this.mode !== SPLIT_MODE
+      [DRAW_LINE_STRING, DRAW_POLYGON, DRAW_90_DEGREE_POLYGON, DRAW_CIRCLE_FROM_CENTER, DRAW_POINT, CUT_MODE, SPLIT_MODE].findIndex(m => m === this.mode) === -1
     ) {
       if (e.index === -1 && e.object == null) {
         this.props.setSelectFeatureIndexes([]);
@@ -199,7 +226,6 @@ export class MapEditor extends React.Component {
             updatedSelectedFeatureIndexes = [...this.props.selectedFeatureIndexes, ...featureIndexes];
           }
         }
-        console.log('updatedData', updatedData, editContext);
         updatedData.features = updatedData.features.map(f => f.id ? f : Object.assign({}, f, { id: uuidv4() }));
         this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
         this.props.setGeometry(updatedData);
@@ -207,7 +233,9 @@ export class MapEditor extends React.Component {
     }));
 
     const handleKeyPress = {
-      SHIFT_DOWN: this.shiftDownHandle.bind(this),
+      SHIFT: this.shiftHandle.bind(this),
+      CTRL_AND_C: this.ctrlAndCHandle.bind(this),
+      CTRL_AND_V: this.ctrlAndVHandle.bind(this),
       ALT_DOWN: this.altDownHandle.bind(this),
       ALT_UP: this.altUpHandle.bind(this),
       DEL: this.delHandle.bind(this),
@@ -230,7 +258,7 @@ export class MapEditor extends React.Component {
       {
         text: 'Polygon',
         icon: 'sharp',
-        mode: DRAW_POLYGON,
+        mode: [DRAW_POLYGON, DRAW_90_DEGREE_POLYGON],
         handle: this.setDrawMode.bind(this, DRAW_POLYGON)
       },
       {
