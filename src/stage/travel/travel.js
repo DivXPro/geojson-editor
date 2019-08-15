@@ -1,5 +1,6 @@
 /* global window */
 import React, { Component } from 'react';
+import uuidv1 from 'uuid/v1';
 import { StaticMap } from 'react-map-gl';
 import { PhongMaterial } from '@luma.gl/core';
 import { AmbientLight, PointLight, LightingEffect } from '@deck.gl/core';
@@ -8,7 +9,8 @@ import { PolygonLayer } from '@deck.gl/layers';
 import { TripsLayer } from '@deck.gl/geo-layers';
 import store from 'store2';
 import ControlPlanel from './control-panel';
-
+import SideBar from './side-bar';
+import trips from '@/data/trips.json';
 // Set your mapbox token here
 const MAPBOX_TOKEN = store('mapboxAccessToken');
 
@@ -17,7 +19,11 @@ const DATA_URL = {
   BUILDINGS:
     'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/trips/buildings.json', // eslint-disable-line
   TRIPS:
-    'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/trips/trips.json' // eslint-disable-line
+    trips.map(t => ({
+      ...t,
+      title: uuidv1(),
+    }))
+    // 'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/trips/trips.json' // eslint-disable-line
 };
 
 const ambientLight = new AmbientLight({
@@ -83,7 +89,7 @@ export default class Travel extends Component {
 
   _renderLayers() {
     const { buildings = DATA_URL.BUILDINGS, trips = DATA_URL.TRIPS, trailLength = 180 } = this.props;
-
+  
     return [
       new TripsLayer({
         id: 'trips',
@@ -143,6 +149,7 @@ export default class Travel extends Component {
             mapboxApiAccessToken={MAPBOX_TOKEN}
           />
         </DeckGL>
+        <SideBar travelers={DATA_URL.TRIPS}></SideBar>
         <ControlPlanel current={this.state.time} length={this.state.loopLength} play={this.state.play} togglePlay={this.togglePlay.bind(this)} handleSliderChange={this.setCurrentTime.bind(this)} />
       </React.Fragment>
     );

@@ -8,12 +8,12 @@ const StyledControlPanel = styled.div.attrs({
 })`
   display: flex;
   position: absolute;
-  right: 20px;
+  left: 20px;
   bottom: 20px;
   z-index: 1000;
   width: 600px;
   height: 80px;
-  background-color: lightgray;
+  background-color: rgba(60,60,60,0.7);
   align-items: center;
   padding: 20px;
   .control-panel__play {
@@ -23,10 +23,10 @@ const StyledControlPanel = styled.div.attrs({
     align-items: center;
     background-color: gray;
     justify-content: center;
+    margin-right: 20px;
     &:hover {
       cursor: pointer;
     }
-    margin-right: 20px;
   }
   .slider {
     width: 100%;
