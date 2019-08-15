@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <style>
+      body {
+        margin: 0;
+        padding: 16px;
+      }
+
+      .progressBarWrapper {
+        position: relative;
+        width: 100%;
+        border: 3px solid black;
+        height: 32px;
+        box-sizing: border-box;
+        margin-bottom: 16px;
+      }
+
+      .progressBarProgress {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+      }
+    </style>
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>GeoJSON Editor</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+    <script>
+      class ProgressBar extends React.Component {
+        constructor(props) {
+          super(props);
+
+          this.state = {
+            progress: 0
+          };
+        }
+
+        update() {
+          this.setState(state => ({
+            progress: (state.progress + 0.5) % 100
+          }));
+        }
+
+        render() {
+          const { color } = this.props;
+          const { progress } = this.state;
+
+          const style = {
+            background: color,
+            width: `${progress}%`
+          };
+
+          return (
+            <div className="progressBarWrapper">
+              <div className="progressBarProgress" style={style} />
+            </div>
+          );
+        }
+      }
+
+      class Main extends React.Component {
+        constructor(props) {
+          super(props);
+
+          const progress1 = (this.progress1 = React.createRef());
+          const progress2 = (this.progress2 = React.createRef());
+          const progress3 = (this.progress3 = React.createRef());
+
+          this.componentsToUpdate = [progress1, progress2, progress3];
+          this.animationID = null;
+        }
+
+        componentDidMount() {
+          this.animationID = window.requestAnimationFrame(() => this.update());
+        }
+
+        componentWillUnmount() {
+          window.cancelAnimationFrame(this.animationID);
+        }
+
+        update() {
+          this.componentsToUpdate.map(component => component.current.update());
+
+          this.animationID = window.requestAnimationFrame(() => this.update());
+        }
+
+        render() {
+          return (
+            <div>
+              <ProgressBar ref={this.progress1} color="magenta" />
+              <ProgressBar ref={this.progress2} color="blue" />
+              <ProgressBar ref={this.progress3} color="yellow" />
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<Main />, document.getElementById('app'));
+    </script>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  </body>
+</html>
