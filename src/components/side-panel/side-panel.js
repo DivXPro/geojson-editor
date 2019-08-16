@@ -9,7 +9,7 @@ export const StyledSideContainer = styled.div.attrs({
   right: 20px;
   width: 340px;
   height: 100%;
-  padding: 20px;
+  padding: 20px 0;
 `;
 
 export const StyledSidePanel = styled.div.attrs({

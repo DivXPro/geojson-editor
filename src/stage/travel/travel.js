@@ -80,7 +80,7 @@ export default class Travel extends Component {
       loopLength: 1800,
       animationSpeed: 5,
       startTime: 0,
-      hoveredObject: null,
+      currentTravel: null,
     };
   }
 
@@ -95,7 +95,7 @@ export default class Travel extends Component {
   }
 
   handleHover({ x, y, object }) {
-    this.setState({ x, y, hoveredObject: object });
+    this.setState({ x, y, currentTravel: object });
   }
 
   _animate() {
@@ -110,11 +110,11 @@ export default class Travel extends Component {
   }
 
   renderTooltip() {
-    const { x, y, hoveredObject } = this.state;
+    const { x, y, currentTravel } = this.state;
     return (
-      hoveredObject && (
+      currentTravel && (
         <StyledTooltip style={{ left: x, top: y }}>
-          <div>{hoveredObject.title}</div>
+          <div>{currentTravel.name}</div>
         </StyledTooltip>
       )
     );
