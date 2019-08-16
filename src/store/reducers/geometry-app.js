@@ -8,6 +8,7 @@ import {
   SET_MODE,
   ADD_LAYER,
   SET_LAYER,
+  SET_LAYER_NAME,
   REMOVE_LAYER,
   REMOVE_FEATURE,
 } from '../actions/geojson-editor';
@@ -44,7 +45,6 @@ function geometryApp(state = initState, action) {
     case SET_GEOMETRY:
       return Immutable.set(state, 'layers', setLayerData(state.layers, state.currentLayerId, action.geometry));
     case ADD_FEATURE:
-      console.log('ADD_FEATURE', action);
       return Immutable.set(state, 'layers', addFeature(state.layers, state.currentLayerId, action.feature));
     case SET_SELECT_FEATURE_INDEXES:
       return Immutable.set(state, 'selectedFeatureIndexes', action.indexes);
@@ -58,6 +58,8 @@ function geometryApp(state = initState, action) {
       return Immutable.set(state, 'layers', addLayer(state.layers, action.layer));
     case SET_LAYER:
       return Immutable.set(state, 'layers', setLayer(state.layers, action.layer));
+    case SET_LAYER_NAME:
+      return Immutable.set(state, 'layers', setLayerName(state.layers, action.id, action.name));
     case REMOVE_LAYER:
       return Immutable.set(state, 'layers', removeLayer(state.layers, action.id));
     default:
@@ -67,18 +69,14 @@ function geometryApp(state = initState, action) {
 
 function addFeature(layers, id, feature) {
   const layer = layers.find(l => l.id === id);
-  console.log('new fs', id, feature);
 
   const features = Immutable.List(layer.data.features).toJS();
   if (Array.isArray(feature)) {
-    console.log('feature is array');
     features.push(...feature);
   } else {
     features.push(feature);
   }
-  console.log('add fs to layer', features);
   const data = Immutable.set(layer.data, 'features', features);
-  console.log('data', data);
   return setLayer(layers, Immutable.set(layer, 'data', data));
 }
 
@@ -111,6 +109,11 @@ function setLayer(layers, layer) {
   if (index > -1) {
     return Immutable.set(layers, index, layer);
   }
+}
+
+function setLayerName(layers, id, name) {
+  const index = layers.findIndex(l => l.id === id);
+  return Immutable.set(layers, index, Immutable.set(layers[index], 'name', name));
 }
 
 function setLayerData(layers, id, data) {

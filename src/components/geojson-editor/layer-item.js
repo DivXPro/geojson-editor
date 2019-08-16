@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { SketchPicker } from 'react-color';
+import { Input } from 'antd';
 import exportJson from '@/utils/export-json';
-import { setLayer, removeLayer } from '@/store/actions/geojson-editor';
+import { setLayer, removeLayer, setLayerName } from '@/store/actions/geojson-editor';
 import SvgIcon from '../commons/svg-icon';
 
 const StyledLayerItem = Styled.div`
@@ -51,6 +52,15 @@ const StyledLayerItem = Styled.div`
 function LayerItem(props) {
   const dispatch = useDispatch();
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
+  const [editName, setEditName] = useState(false);
+
+  useEffect(() => {
+    if (editName) {
+      nameEditRef.focus()
+    }
+  });
+
+  let nameEditRef = null;
 
   const handlePickColor = (color) => {
     dispatch(
@@ -61,6 +71,12 @@ function LayerItem(props) {
       }))
     );
     setDisplayColorPicker(false);
+  }
+  const handleEditName = () => {
+    setEditName(true);
+  }
+  const handleChangeName = (name) => {
+    dispatch(setLayerName(props.layer.id, name));
   }
   const toggleLayerDisplay = () => {
     dispatch(setLayer(Object.assign({}, props.layer, { hidden: !props.layer.hidden })));
@@ -83,7 +99,8 @@ function LayerItem(props) {
 
   return <StyledLayerItem>
     <div className="thumbnail" style={{ backgroundColor: props.layer.color || '#000' }} onClick={handleClick.bind(this)}></div>
-    <div className="name">{props.layer.name}</div>
+    <Input style={{ height: '18px', display: editName ? 'block' : 'none' }} ref={input => nameEditRef = input} value={props.layer.name} onChange={e => handleChangeName(e.target.value)} onPressEnter={() => setEditName(false)} onBlur={() => setEditName(false)} />
+    <div style={{ display: editName ? 'none' : 'block' }} className="name" onDoubleClick={handleEditName}>{props.layer.name}</div>
       {
         displayColorPicker ? 
           <div className="popover">
