@@ -19,7 +19,7 @@ function SideBar(props) {
     <StyledSideContainer>
       <StyledSidePanel>
         <StyledTravelList>
-          {props.travelers.map(t => <Traveler key={t.title} traveler={t}/>)}
+          {props.travelers.map(t => <Traveler key={t.id} traveler={t}/>)}
         </StyledTravelList>
       </StyledSidePanel>
     </StyledSideContainer>

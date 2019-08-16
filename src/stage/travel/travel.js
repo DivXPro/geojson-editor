@@ -8,6 +8,7 @@ import DeckGL from '@deck.gl/react';
 import { PolygonLayer } from '@deck.gl/layers';
 import { TripsLayer } from '@deck.gl/geo-layers';
 import store from 'store2';
+import styled from 'styled-components';
 import ControlPlanel from './control-panel';
 import SideBar from './side-bar';
 import trips from '@/data/trips.json';
@@ -21,7 +22,8 @@ const DATA_URL = {
   TRIPS:
     trips.map(t => ({
       ...t,
-      title: uuidv1(),
+      name: uuidv1().substr(0, 8),
+      id: uuidv1(),
     }))
     // 'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/trips/trips.json' // eslint-disable-line
 };
@@ -54,6 +56,21 @@ const INITIAL_VIEW_STATE = {
   bearing: 0
 };
 
+const StyledTooltip = styled.div.attrs({
+  className: 'tooltip'
+})`
+  pointer-events: none;
+  position: absolute;
+  z-index: 9;
+  font-size: 12px;
+  padding: 8px;
+  background: #000;
+  color: #fff;
+  min-width: 160px;
+  max-height: 240px;
+  overflow-y: hidden;
+`
+
 export default class Travel extends Component {
   constructor(props) {
     super(props);
@@ -61,8 +78,9 @@ export default class Travel extends Component {
       time: 0,
       play: false,
       loopLength: 1800,
-      animationSpeed: 1,
+      animationSpeed: 5,
       startTime: 0,
+      hoveredObject: null,
     };
   }
 
@@ -76,6 +94,10 @@ export default class Travel extends Component {
     }
   }
 
+  handleHover({ x, y, object }) {
+    this.setState({ x, y, hoveredObject: object });
+  }
+
   _animate() {
     if (this.state.time > this.state.loopLength ) {
       this.setState({ time: 0 });
@@ -87,9 +109,20 @@ export default class Travel extends Component {
     this._animationFrame = window.requestAnimationFrame(this._animate.bind(this));
   }
 
+  renderTooltip() {
+    const { x, y, hoveredObject } = this.state;
+    return (
+      hoveredObject && (
+        <StyledTooltip style={{ left: x, top: y }}>
+          <div>{hoveredObject.title}</div>
+        </StyledTooltip>
+      )
+    );
+  }
+
   _renderLayers() {
     const { buildings = DATA_URL.BUILDINGS, trips = DATA_URL.TRIPS, trailLength = 180 } = this.props;
-  
+
     return [
       new TripsLayer({
         id: 'trips',
@@ -100,7 +133,11 @@ export default class Travel extends Component {
         widthMinPixels: 2,
         rounded: true,
         trailLength,
-        currentTime: this.state.time
+        pickable: true,
+        autoHighlight: true,
+        highlightColor: [125, 185, 222, 180],
+        currentTime: this.state.time,
+        onHover: this.handleHover.bind(this)
       }),
       new PolygonLayer({
         id: 'buildings',
@@ -148,6 +185,7 @@ export default class Travel extends Component {
             preventStyleDiffing={true}
             mapboxApiAccessToken={MAPBOX_TOKEN}
           />
+          {this.renderTooltip.bind(this)}
         </DeckGL>
         <SideBar travelers={DATA_URL.TRIPS}></SideBar>
         <ControlPlanel current={this.state.time} length={this.state.loopLength} play={this.state.play} togglePlay={this.togglePlay.bind(this)} handleSliderChange={this.setCurrentTime.bind(this)} />
