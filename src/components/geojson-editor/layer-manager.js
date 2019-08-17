@@ -2,8 +2,8 @@ import React from 'react';
 import uuidv4 from 'uuid/v4';
 import Styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
+import { Upload } from 'antd';
 import { addLayer } from '@/store/actions/geojson-editor';
-import UploadField from '@/components/commons/upload-field';
 import LayerItem from './layer-item';
 
 const StyledLayerManager = Styled.section`
@@ -39,12 +39,12 @@ function LayerList(props) {
   const { layers } = useSelector(state => ({
     layers: state.layers,
   }));
- const updateGeom = (files) => {
+ const updateGeom = (file) => {
     const reader = new FileReader();
-    const nameArr = files[0].name.split('.');
+    const nameArr = file.name.split('.');
     nameArr.pop();
     const name = nameArr.join('.');
-    reader.readAsText(files[0]);
+    reader.readAsText(file);
     reader.onload = (e) => {
       const layer = {
         id: uuidv4(),
@@ -68,14 +68,9 @@ function LayerList(props) {
   }
   return (
     <StyledLayerManager>
-      <UploadField 
-        onFiles={updateGeom}
-        uploadProps={{
-          accept: '.json,.geojson',
-        }}
-      >
+      <Upload customRequest={e => updateGeom(e.file)} showUploadList={false}>
         <div className="button">添加新图层</div>
-      </UploadField>
+      </Upload>
       {layers.map(layer => (<LayerItem key={layer.id} layer={layer} />))}
     </StyledLayerManager>
   )
