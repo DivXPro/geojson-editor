@@ -7,13 +7,13 @@ import { AmbientLight, PointLight, LightingEffect } from '@deck.gl/core';
 import DeckGL from '@deck.gl/react';
 import { PolygonLayer } from '@deck.gl/layers';
 import { TripsLayer } from '@deck.gl/geo-layers';
-import store from 'store2';
+// import store from 'store2';
 import styled from 'styled-components';
 import ControlPlanel from './control-panel';
 import SideBar from './side-bar';
 import trips from '@/data/trips.json';
 // Set your mapbox token here
-const MAPBOX_TOKEN = store('mapboxAccessToken');
+const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGl2eCIsImEiOiJtdzN3dndvIn0.LKwcY4HJPVItRlDBfNodTw'
 
 // Source data CSV
 const DATA_URL = {

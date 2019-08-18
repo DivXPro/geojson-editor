@@ -8,10 +8,10 @@ import { LOAD_DATASET_DATA, addLayer } from '../actions/geojson-editor';
 export const loadDataset = (action$, state$) => action$.pipe(
   ofType(LOAD_DATASET_DATA),
   mergeMap(action => {
-    return fromPromise(loadFeatures(action.datasetId)).pipe(
+    return fromPromise(getFeatures(action.datasetId)).pipe(
       map(data => addLayer({
         id: action.datasetId,
-        name: action.datasetId,
+        name: action.name,
         data,
         pickable: false,
         stroked: false,
@@ -37,11 +37,11 @@ function nextUrl(link) {
   return reg.test(link) ? link.match(linkReg)[0] : null;
 }
 
-async function loadFeatures(datasetId, url) {
+async function getFeatures(datasetId, url) {
   const { data, headers } = url ? await next(url) : await getFeatureList(datasetId);
   const nextUri = nextUrl(headers.link);
   if (nextUri) {
-    const nextData = await loadFeatures(datasetId, nextUrl(headers.link));
+    const nextData = await getFeatures(datasetId, nextUrl(headers.link));
     data.features.push(...nextData.features);
   }
   return data;

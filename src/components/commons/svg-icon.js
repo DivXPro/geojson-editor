@@ -16,7 +16,6 @@ function SvgIcon(props) {
     height: ${props.width || defaultStyle.height};
     padding: ${props.padding || defaultStyle.padding};
     fill: ${props.fill || defaultStyle.fill};
-    pointer-events: none;
     &:hover {
       fill: ${props.hoverFill || defaultStyle.hoverFill};
       cursor: ${props.cursor};

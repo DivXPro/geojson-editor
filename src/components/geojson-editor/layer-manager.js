@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import uuidv4 from 'uuid/v4';
 import Styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { Upload } from 'antd';
+import { Upload, Modal, Radio } from 'antd';
 import { addLayer } from '@/store/actions/geojson-editor';
 import LayerItem from './layer-item';
+import { next } from '@/mapbox/next';
+import { getDatasetList } from '@/mapbox/dataset';
+import { loadDataset } from '@/store/actions/geojson-editor';
 
 const StyledLayerManager = Styled.section`
   background: rgb(36, 39, 48);
@@ -23,7 +26,7 @@ const StyledLayerManager = Styled.section`
     line-height: 14px;
     text-align: center;
     vertical-align: middle;
-    width: 105px;
+    min-width: 105px;
     opacity: 1;
     pointer-events: all;
     border-radius: 2px;
@@ -34,12 +37,37 @@ const StyledLayerManager = Styled.section`
   }
 `
 
+const radioStyle = {
+  display: 'block',
+  height: '30px',
+  lineHeight: '30px',
+};
+
+function nextUrl(link) {
+  const reg = /^<https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*>; rel="next"$/i;
+  const linkReg = /https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*/i
+  return reg.test(link) ? link.match(linkReg)[0] : null;
+}
+
 function LayerList(props) {
   const dispatch = useDispatch();
+  const [visible, setVisible] = useState(false);
+  const [datasets, setDatasets] = useState([]);
+  const [chosed, setChosed] = useState(null);
+
   const { layers } = useSelector(state => ({
     layers: state.layers,
   }));
- const updateGeom = (file) => {
+  const loadDatasets = async (url) => {
+    const { data, headers } = url ? await next(url) : await getDatasetList();
+    const nextUri = nextUrl(headers.link);
+    if (nextUri) {
+      const nextData = await loadDatasets(nextUrl(headers.link));
+      data.datasets.push(...nextData.datasets);
+    }
+    return data;
+  }
+  const updateGeom = (file) => {
     const reader = new FileReader();
     const nameArr = file.name.split('.');
     nameArr.pop();
@@ -66,12 +94,31 @@ function LayerList(props) {
       dispatch(addLayer(layer));
     }
   }
+  const importDataset = () => {
+    dispatch(loadDataset(chosed.id, chosed.name))
+    setVisible(false);
+  }
+  const handleImport = async () => { 
+    const sets = await loadDatasets();
+    setDatasets(sets);
+    setVisible(true);
+  }
   return (
     <StyledLayerManager>
       <Upload customRequest={e => updateGeom(e.file)} showUploadList={false}>
-        <div className="button">添加新图层</div>
+        <div className="button">导入GeoJSON</div>
       </Upload>
+      <div className="button" onClick={handleImport}>导入Dataset</div>
       {layers.map(layer => (<LayerItem key={layer.id} layer={layer} />))}
+      <Modal title="导入Dataset" visible={visible} onOk={importDataset} onCancel={e => setVisible(false)}>
+        <Radio.Group value={chosed} onChange={e => setChosed(e.target.value)}>
+          {datasets.map(set => (
+            <Radio style={radioStyle} key={set.id} value={set}>
+              {set.name}
+            </Radio>
+          ))}
+        </Radio.Group>
+      </Modal>
     </StyledLayerManager>
   )
 }

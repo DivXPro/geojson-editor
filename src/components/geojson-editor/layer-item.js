@@ -94,7 +94,7 @@ function LayerItem(props) {
   }
 
   const handleExport = () => {
-    exportJson('layer.geojson', JSON.stringify(props.layer.data));
+    exportJson(`${props.layer.name || 'layer'}.geojson`, JSON.stringify(props.layer.data));
   }
 
   return <StyledLayerItem>
