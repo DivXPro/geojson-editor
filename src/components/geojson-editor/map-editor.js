@@ -6,10 +6,10 @@ import { GlobalHotKeys } from 'react-hotkeys';
 import { connect } from 'react-redux'
 import { EditableGeoJsonLayer } from 'nebula.gl';
 import { GeoJsonLayer } from '@deck.gl/layers';
-import { setGeometry, setSelectFeatureIndexes, setMode, removeFeature, loadDataset, addFeature } from '@/store/actions/geojson-editor';
 import cutGeometry from '@/utils/cut-geometry';
-import SideBar from './side-bar';
 import ControlPlanel from '@/components/control-panel/control-panel';
+import { setGeometry, setSelectFeatureIndexes, setMode, removeFeature, loadDataset, addFeature } from '@/store/actions/geojson-editor';
+import SideBar from './side-bar';
 
 const DRAW_LINE_STRING = 'drawLineString';
 const DRAW_POLYGON = 'drawPolygon';
