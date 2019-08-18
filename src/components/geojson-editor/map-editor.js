@@ -77,7 +77,6 @@ export class MapEditor extends React.Component {
     return this.props.selectedFeatureIndexes;
   }
 
-
   enterHandle() {
     if (this.mode !== VIEW_MODE) {
       this.setViewMode();
@@ -177,7 +176,7 @@ export class MapEditor extends React.Component {
       height="100%"
       {...viewport}
       mapStyle="mapbox://styles/mapbox/streets-v10"
-      mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN || 'pk.eyJ1IjoiZGl2eCIsImEiOiJtdzN3dndvIn0.LKwcY4HJPVItRlDBfNodTw'}
+      mapboxApiAccessToken="pk.eyJ1IjoiZGl2eCIsImEiOiJtdzN3dndvIn0.LKwcY4HJPVItRlDBfNodTw"
     />;
   }
 
@@ -190,7 +189,7 @@ export class MapEditor extends React.Component {
   }
 
   render() {
-    const editableGeoJsonLayer = new EditableGeoJsonLayer(Object.assign({}, this.currentLayer, {
+    const editableGeoJsonLayer = this.currentLayer ? new EditableGeoJsonLayer(Object.assign({}, this.currentLayer, {
       selectedFeatureIndexes: this.selectedFeatureIndexes,
       mode: this.mode === CUT_MODE ? DRAW_POLYGON : this.mode,
       lineWidthScale: 2,
@@ -230,8 +229,7 @@ export class MapEditor extends React.Component {
         this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
         this.props.setGeometry(updatedData);
       }
-    }));
-
+    })): null;
     const handleKeyPress = {
       SHIFT: this.shiftHandle.bind(this),
       CTRL_AND_C: this.ctrlAndCHandle.bind(this),
@@ -311,6 +309,7 @@ export class MapEditor extends React.Component {
       }
     ];
 
+    const layers = editableGeoJsonLayer ? [editableGeoJsonLayer, ...this.layers] : this.layers;
     return (
       <React.Fragment>
         <GlobalHotKeys keyMap={keyMap} handlers={handleKeyPress}>
@@ -322,7 +321,7 @@ export class MapEditor extends React.Component {
             // getCursor={editableGeoJsonLayer.getCursor.bind(editableGeoJsonLayer)}
             onClick={this.handleDeckClick.bind(this)}
             pickingRadius={5}
-            layers={[editableGeoJsonLayer, ...this.layers]}
+            layers={layers}
             controller={true}>
             {this.renderStaticMap(this.state.viewport)}
           </DeckGL>

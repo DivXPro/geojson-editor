@@ -11,6 +11,7 @@ export const loadDataset = (action$, state$) => action$.pipe(
     return fromPromise(getFeatures(action.datasetId)).pipe(
       map(data => addLayer({
         id: action.datasetId,
+        sourceId: action.datasetId,
         name: action.name,
         data,
         pickable: false,

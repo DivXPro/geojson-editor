@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { SketchPicker } from 'react-color';
-import { Input } from 'antd';
+import { Input, Menu, Dropdown } from 'antd';
 import exportJson from '@/utils/export-json';
-import { setLayer, removeLayer, setLayerName } from '@/store/actions/geojson-editor';
+import { setLayer, removeLayer, setLayerName, setCurrentLayer } from '@/store/actions/geojson-editor';
 import SvgIcon from '../commons/svg-icon';
 
 const StyledLayerItem = Styled.div`
@@ -17,7 +17,7 @@ const StyledLayerItem = Styled.div`
     width: 20px;
     height: 12px;
     border-radius: 2px;
-    margin-right: 10px;
+    margin: 0 10px;
     &:hover {
       cursor: pointer;
     }
@@ -49,6 +49,8 @@ const StyledLayerItem = Styled.div`
     alignItems: center;
   }
 `;
+
+
 function LayerItem(props) {
   const dispatch = useDispatch();
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
@@ -60,7 +62,27 @@ function LayerItem(props) {
     }
   });
 
+
+  const menu = () => (
+    <Menu>
+      <Menu.Item>
+        <span onClick={handleCurrent}>编辑当前层</span>
+      </Menu.Item>
+      <Menu.Item>
+        <span onClick={handleExport}>导出</span>
+      </Menu.Item>
+      <Menu.Item>
+        <span onClick={handleRemoveLayer}>删除</span>
+      </Menu.Item>
+    </Menu>
+  );
+
   let nameEditRef = null;
+
+  const handleCurrent = () => {
+    console.log('handleCurrent', props.layer);
+    dispatch(setCurrentLayer(props.layer.id));
+  }
 
   const handlePickColor = (color) => {
     dispatch(
@@ -72,12 +94,15 @@ function LayerItem(props) {
     );
     setDisplayColorPicker(false);
   }
+
   const handleEditName = () => {
     setEditName(true);
   }
+
   const handleChangeName = (name) => {
     dispatch(setLayerName(props.layer.id, name));
   }
+
   const toggleLayerDisplay = () => {
     dispatch(setLayer(Object.assign({}, props.layer, { hidden: !props.layer.hidden })));
   }
@@ -98,26 +123,23 @@ function LayerItem(props) {
   }
 
   return <StyledLayerItem>
+    <div onClick={toggleLayerDisplay.bind(this)} className="operator">
+      <SvgIcon fill="rgb(106,116,133)" hoverFill="white" cursor="pointer" name={props.layer.hidden ? 'hidden' : 'view_simple'} />
+    </div>
     <div className="thumbnail" style={{ backgroundColor: props.layer.color || '#000' }} onClick={handleClick.bind(this)}></div>
     <Input style={{ height: '18px', display: editName ? 'block' : 'none' }} ref={input => nameEditRef = input} value={props.layer.name} onChange={e => handleChangeName(e.target.value)} onPressEnter={() => setEditName(false)} onBlur={() => setEditName(false)} />
     <div style={{ display: editName ? 'none' : 'block' }} className="name" onDoubleClick={handleEditName}>{props.layer.name}</div>
-      {
-        displayColorPicker ? 
-          <div className="popover">
-            <div className="cover" onClick={handleClose} />
-            <SketchPicker color={props.layer.color} onChange={handlePickColor.bind(this)} />
-          </div> :
-          null
-      }
-    <div onClick={toggleLayerDisplay.bind(this)} className="operator">
-      <SvgIcon fill="rgb(106,116,133)" hoverFill="white" cursor="pointer" name={ props.layer.hidden ? 'hidden': 'view_simple' } />
-    </div>
-    <div onClick={handleExport.bind(this)} className="operator">
-      <SvgIcon fill="rgb(106,116,133)" hoverFill="white" cursor="pointer" name="download" />
-    </div>
-    <div onClick={handleRemoveLayer.bind(this)} className="operator">
-      <SvgIcon fill="rgb(106,116,133)" hoverFill="#ff4d4f" cursor="pointer" name="delete" />
-    </div>
+    {
+      displayColorPicker ? 
+        <div className="popover">
+          <div className="cover" onClick={handleClose} />
+          <SketchPicker color={props.layer.color} onChange={handlePickColor.bind(this)} />
+        </div> :
+        null
+    }
+    <Dropdown overlay={menu} trigger={['click']}>
+      <span><SvgIcon fill="rgb(106,116,133)" cursor="pointer" name="more" /></span>
+    </Dropdown>
   </StyledLayerItem>
 }
 

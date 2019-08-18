@@ -1,6 +1,7 @@
 import Immutable from 'immutable';
 import uuidv4 from 'uuid/v4';
 import {
+  SET_CURRENT_LAYER,
   SET_GEOMETRY,
   SET_SELECT_FEATURE_INDEXES,
   ADD_FEATURE,
@@ -42,6 +43,8 @@ const initState = {
 
 function geometryApp(state = initState, action) {
   switch (action.type) {
+    case SET_CURRENT_LAYER:
+      return setCurrentLayer(state, action.id);
     case SET_GEOMETRY:
       return Immutable.set(state, 'layers', setLayerData(state.layers, state.currentLayerId, action.geometry));
     case ADD_FEATURE:
@@ -61,15 +64,66 @@ function geometryApp(state = initState, action) {
     case SET_LAYER_NAME:
       return Immutable.set(state, 'layers', setLayerName(state.layers, action.id, action.name));
     case REMOVE_LAYER:
+      console.log('REMOVE_LAYER');
       return Immutable.set(state, 'layers', removeLayer(state.layers, action.id));
     default:
       return state;
   }
 }
 
+function setCurrentLayer(state, id) {
+  const newLayerIndex = state.layers.findIndex(l => l.id === id);
+  const oldLayerIndex = state.layers.findIndex(l => l.id === state.currentLayerId);
+  const newLayer = geojson2Edit(state.layers[newLayerIndex]);
+  const oldLayer = edit2Geojson(state.layers[oldLayerIndex]);
+  const layers = Immutable.fromJS(state.layers).set(newLayerIndex, newLayer).set(oldLayerIndex, oldLayer);
+  return Immutable.fromJS(state)
+    .set('layers', layers)
+    .set('currentLayerId', newLayer.id)
+    .toJS();
+}
+
+function edit2Geojson(layer) {
+  return {
+    id: uuidv4(),
+    sourceId: layer.sourceId,
+    name: layer.name,
+    data: layer.data,
+    pickable: true,
+    autoHighlight: false,
+    stroked: false,
+    filled: true,
+    extruded: false,
+    lineWidthScale: 1,
+    lineWidthMinPixels: 2,
+    lineWidthMaxPixels: 3,
+    getRadius: 100,
+    getLineWidth: 1,
+    getElevation: 30,
+    hidden: false,
+    color: layer.color || '#000',
+    getFillColor: layer.getFillColor || [],
+  };
+}
+
+function geojson2Edit(layer) {
+  return {
+    id: uuidv4(),
+    sourceId: layer.sourceId,
+    name: layer.name,
+    data: layer.data,
+    pickable: true,
+    autoHighlight: true,
+    color: layer.color || '#000',
+    getFillColor: layer.getFillColor || [],
+    lineWidthScale: 2,
+    lineWidthMinPixels: 1,
+    lineWidthMaxPixels: 2,
+  };
+}
+
 function addFeature(layers, id, feature) {
   const layer = layers.find(l => l.id === id);
-
   const features = Immutable.List(layer.data.features).toJS();
   if (Array.isArray(feature)) {
     features.push(...feature);
@@ -102,6 +156,7 @@ function addLayer(layers, layer) {
   if (layers.findIndex(l => l.id === layer.id) === -1) {
     return Immutable.set(layers, layers.length, layer);
   }
+  return layers;
 }
 
 function setLayer(layers, layer) {
