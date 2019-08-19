@@ -14,6 +14,7 @@ pipeline {
         echo '构建中...'
         sh 'ls src/components'
         sh 'npm install'
+        sh 'ls'
         sh 'npm run build'
         echo '构建完成.'
       }
