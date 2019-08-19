@@ -8,9 +8,7 @@ pipeline {
     }
     stage('构建') {
       agent {
-        docker {
-          image 'node:8'
-        }
+      	label 'node-8'
       }
       steps {
         echo '构建中...'
