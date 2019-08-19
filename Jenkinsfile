@@ -14,7 +14,7 @@ pipeline {
       }
       steps {
         echo '构建中...'
-        sh 'ls src/components'
+        sh 'ls'
         sh 'npm install'
         sh 'ls node_modules/react-scripts/config'
         sh 'cat node_modules/react-scripts/config/webpack.config.js'
