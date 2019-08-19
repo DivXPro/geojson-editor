@@ -13,10 +13,6 @@ pipeline {
       steps {
         echo '构建中...'
         sh 'ls build'
-        sh 'npm install'
-        sh 'ls node_modules/react-scripts/config'
-        sh 'cat node_modules/react-scripts/config/webpack.config.js'
-        sh 'npm run build'
         echo '构建完成.'
       }
     }
