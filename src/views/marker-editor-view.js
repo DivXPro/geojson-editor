@@ -1,5 +1,5 @@
 import React from 'react';
-import MarkerEditorWrapper from '@/components/marker-editor/marker-editor-wrapper';
+import MarkerEditorWrapper from '../components/marker-editor/marker-editor-wrapper';
 
 const initViewport = {
   bearing: 0,
