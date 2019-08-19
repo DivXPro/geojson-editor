@@ -32,6 +32,7 @@ function SetupProfile(props) {
           <Input size="small" value={mapboxUsername} onChange={e => setMapboxUsername(e.target.value)}></Input>
         </Form.Item>
       </Form>
+      <span>该配置数据将只存储在您的浏览器本地缓存中，请放心使用</span>
     </Modal>
   );
 }

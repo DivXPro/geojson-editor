@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SketchPicker } from 'react-color';
 import { Input, Menu, Dropdown } from 'antd';
 import exportJson from '@/utils/export-json';
@@ -55,6 +55,10 @@ function LayerItem(props) {
   const dispatch = useDispatch();
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
   const [editName, setEditName] = useState(false);
+
+  const { currentLayerId } = useSelector(state => ({
+    currentLayerId: state.currentLayerId,
+  }));
 
   useEffect(() => {
     if (editName) {
@@ -121,13 +125,17 @@ function LayerItem(props) {
     exportJson(`${props.layer.name || 'layer'}.geojson`, JSON.stringify(props.layer.data));
   }
 
+  const isCurrentLayer = () => {
+    return currentLayerId === props.layer.id;
+  }
+
   return <StyledLayerItem>
     <div onClick={toggleLayerDisplay.bind(this)} className="operator">
       <SvgIcon fill="rgb(106,116,133)" hoverFill="white" cursor="pointer" name={props.layer.hidden ? 'hidden' : 'view_simple'} />
     </div>
     <div className="thumbnail" style={{ backgroundColor: props.layer.color || '#000' }} onClick={handleClick.bind(this)}></div>
     <Input style={{ height: '18px', display: editName ? 'block' : 'none' }} ref={input => nameEditRef = input} value={props.layer.name} onChange={e => handleChangeName(e.target.value)} onPressEnter={() => setEditName(false)} onBlur={() => setEditName(false)} />
-    <div style={{ display: editName ? 'none' : 'block' }} className="name" onDoubleClick={handleEditName}>{props.layer.name}</div>
+    <div style={{ display: editName ? 'none' : 'block', fontWeight: isCurrentLayer() ? 'bolder' : 'lighter' }} className="name" onDoubleClick={handleEditName}>{props.layer.name}</div>
     {
       displayColorPicker ? 
         <div className="popover">

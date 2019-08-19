@@ -351,7 +351,7 @@ export class MapEditor extends React.Component {
             height="100%"
             initialViewState={this.state.viewport}
             onViewStateChange={({ viewState }) => this.setState({ viewport: viewState })}
-            getCursor={editableGeoJsonLayer.getCursor.bind(editableGeoJsonLayer)}
+            getCursor={editableGeoJsonLayer ? editableGeoJsonLayer.getCursor.bind(editableGeoJsonLayer) : undefined}
             onClick={this.handleDeckClick.bind(this)}
             pickingRadius={5}
             layers={layers}

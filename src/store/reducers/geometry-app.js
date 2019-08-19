@@ -71,6 +71,9 @@ function geometryApp(state = initState, action) {
 }
 
 function setCurrentLayer(state, id) {
+  if (state.currentLayerId === id) {
+    return state;
+  }
   const newLayerIndex = state.layers.findIndex(l => l.id === id);
   const oldLayerIndex = state.layers.findIndex(l => l.id === state.currentLayerId);
   const newLayer = geojson2Edit(state.layers[newLayerIndex]);

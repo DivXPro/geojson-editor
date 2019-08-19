@@ -12,15 +12,34 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import './index.css';
 import './icons';
 
+const styleCode = {
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  textAlign: 'center',
+  fontSize: '42px',
+  color: 'rgb(31,186,214)'
+};
+
+const appStyle = {
+  height: '100%',
+  display: 'flex',
+  'flexDirection': 'column',
+  'justifyContent': 'center',
+  'alignItems': 'center'
+}
+
 function App(props) {
   return (
-    <div>
-      <h1>GIS Worker</h1>
-      <ul>
+    <div style={appStyle}>
+      <Link to="/geo_editor">
+        <h1 style={styleCode}>GeoJSON Editor</h1>
+      </Link>
+      <span>这是一个帮大家更方便地画GeoJSON格式地图的工具，可以导入本地文件也可以导入Mapbox中的Dataset</span>
+      {/* <ul>
         <li><Link to="/geo_editor">GeoJSON Editor</Link></li>
         <li><Link to="/marker_editor">Marker Editor</Link></li>
         <li><Link to="/travel">Travel</Link></li>
-      </ul>
+      </ul> */}
     </div>
   );
 }
