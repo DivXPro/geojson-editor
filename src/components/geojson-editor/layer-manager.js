@@ -105,7 +105,7 @@ function LayerList(props) {
   }
   return (
     <StyledLayerManager>
-      <Upload customRequest={e => updateGeom(e.file)} showUploadList={false}>
+      <Upload customRequest={e => updateGeom(e.file)} showUploadList={false} accept=".geojson,.json">
         <div className="button">导入GeoJSON</div>
       </Upload>
       <div className="button" onClick={handleImport}>导入Dataset</div>
