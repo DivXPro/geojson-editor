@@ -8,11 +8,11 @@ pipeline {
     }
     stage('构建') {
       agent {
-        label 'node-10'
+        label 'node-8'
       }
       steps {
         echo '构建中...'
-        sh 'ls src/components'
+        sh 'ls build'
         sh 'npm install'
         sh 'ls node_modules/react-scripts/config'
         sh 'cat node_modules/react-scripts/config/webpack.config.js'
