@@ -1,6 +1,6 @@
 // import darkTheme from '@ant-design/dark-theme';
 const darkTheme = require('@ant-design/dark-theme');
-const { override, fixBabelImports, addLessLoader } = require('customize-cra');
+const { override, fixBabelImports, addLessLoader, addWebpackAlias } = require('customize-cra');
 
 module.exports = override(
   fixBabelImports('import', {
@@ -14,5 +14,8 @@ module.exports = override(
       '@border-radius-base': '0',
       '@border-radius-sm': '0',
     }),
+  }),
+  addWebpackAlias({
+    '@': `${__dirname}/src/`
   }),
 );
