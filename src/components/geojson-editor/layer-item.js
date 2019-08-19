@@ -80,7 +80,6 @@ function LayerItem(props) {
   let nameEditRef = null;
 
   const handleCurrent = () => {
-    console.log('handleCurrent', props.layer);
     dispatch(setCurrentLayer(props.layer.id));
   }
 

@@ -64,7 +64,6 @@ function geometryApp(state = initState, action) {
     case SET_LAYER_NAME:
       return Immutable.set(state, 'layers', setLayerName(state.layers, action.id, action.name));
     case REMOVE_LAYER:
-      console.log('REMOVE_LAYER');
       return Immutable.set(state, 'layers', removeLayer(state.layers, action.id));
     default:
       return state;

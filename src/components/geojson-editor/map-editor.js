@@ -26,9 +26,11 @@ const CUT_MODE = 'cut';
 
 const keyMap = {
   SHIFT: 'shift',
-  ALT_DOWN: { sequence: 'alt', action: 'keydown' },
+  SHIFT_DOWN: { sequence: 'shift', action: 'keydown' },
+  SHIFT_UP: { sequence: 'shift', action: 'keyup' },
   CTRL_AND_C: ['ctrl+c', 'command+c'],
   CTRL_AND_V: ['ctrl+v', 'command+v'],
+  ALT_DOWN: { sequence: 'alt', action: 'keydown' },
   ALT_UP: { sequence: 'alt', action: 'keyup' },
   ENTER: 'enter',
   DEL: ['del', 'backspace']
@@ -61,7 +63,8 @@ export class MapEditor extends React.Component {
     this.state = {
       pointsRemovable: true,
       viewport: props.viewport,
-      copyFeatures: null
+      copyFeatures: null,
+      prevMode: null,
     }
   }
 
@@ -84,11 +87,21 @@ export class MapEditor extends React.Component {
   }
 
   altDownHandle() {
-    this.props.setMode(DRAW_LINE_STRING);
+    if (this.mode === TRANSLATE_MODE) {
+      this.setState({ 
+        prevMode: TRANSLATE_MODE
+      });
+      this.props.setMode(MODIFY_MODE);
+    }
   }
 
   altUpHandle() {
-    this.setViewMode();
+    if (this.state.prevMode != null) {
+      this.props.setMode(this.state.prevMode);
+      this.setState({
+        prevMode: null
+      });
+    }
   }
 
   shiftHandle() {
@@ -96,6 +109,24 @@ export class MapEditor extends React.Component {
       this.props.setMode(DRAW_90_DEGREE_POLYGON);
     } else if (this.mode === DRAW_90_DEGREE_POLYGON) {
       this.props.setMode(DRAW_POLYGON);
+    }
+  }
+
+  shiftDownHandle() {
+    if (this.mode === TRANSLATE_MODE) {
+      this.setState({
+        prevMode: ROTATE_MODE
+      });
+      this.props.setMode(ROTATE_MODE);
+    }
+  }
+
+  shiftUpHandle() {
+    if (this.state.prevMode != null) {
+      this.props.setMode(this.state.prevMode);
+      this.setState({
+        prevMode: null
+      });
     }
   }
 
@@ -231,11 +262,13 @@ export class MapEditor extends React.Component {
       }
     })): null;
     const handleKeyPress = {
-      SHIFT: this.shiftHandle.bind(this),
+      // SHIFT: this.shiftHandle.bind(this),
       CTRL_AND_C: this.ctrlAndCHandle.bind(this),
       CTRL_AND_V: this.ctrlAndVHandle.bind(this),
       ALT_DOWN: this.altDownHandle.bind(this),
       ALT_UP: this.altUpHandle.bind(this),
+      SHIFT_DOWN: this.shiftDownHandle.bind(this),
+      SHIFT_UP: this.shiftUpHandle.bind(this),
       DEL: this.delHandle.bind(this),
       ENTER: this.enterHandle.bind(this)
     };
@@ -318,7 +351,7 @@ export class MapEditor extends React.Component {
             height="100%"
             initialViewState={this.state.viewport}
             onViewStateChange={({ viewState }) => this.setState({ viewport: viewState })}
-            // getCursor={editableGeoJsonLayer.getCursor.bind(editableGeoJsonLayer)}
+            getCursor={editableGeoJsonLayer.getCursor.bind(editableGeoJsonLayer)}
             onClick={this.handleDeckClick.bind(this)}
             pickingRadius={5}
             layers={layers}

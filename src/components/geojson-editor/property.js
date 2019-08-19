@@ -70,7 +70,6 @@ function Property(props) {
 
   const removeProperty = (field) => {
     delete layer.data.features[index]['properties'][field];
-    console.log('layer', layer);
     dispatch(setLayer(layer));
   }
 
