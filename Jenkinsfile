@@ -8,14 +8,11 @@ pipeline {
     }
     stage('构建') {
       agent {
-        label 'node-8'
+        label 'node-10'
       }
       steps {
         echo '构建中...'
-        sh 'ls build'
         sh 'npm install'
-        sh 'ls node_modules/react-scripts/config'
-        sh 'cat node_modules/react-scripts/config/webpack.config.js'
         sh 'npm run build'
         echo '构建完成.'
       }
@@ -23,7 +20,6 @@ pipeline {
     stage('打包镜像') {
       steps {
         echo '打包中...'
-        sh 'ls'
         sh "docker build -t ${env.DOCKER_REPO_NAME}:${env.GIT_BUILD_REF} -t ${env.DOCKER_REPO_NAME}:latest ."
         echo '打包完成'
       }
