@@ -8,7 +8,7 @@ pipeline {
     }
     stage('构建') {
       agent {
-        label 'node'
+        label 'node-10'
       }
       steps {
         echo '构建中...'
