@@ -24,7 +24,7 @@ function SvgIcon(props) {
   const { name } = props;
   return (
     <StyledSvgIcon>
-      <use xlinkHref={"#" + name} />
+      <use xlinkHref={"#icon-" + name} />
     </StyledSvgIcon>
   );
 };

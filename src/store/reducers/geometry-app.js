@@ -105,6 +105,7 @@ function edit2Geojson(layer) {
     hidden: false,
     color: layer.color || '#000',
     getFillColor: layer.getFillColor || [],
+    getLineColor: layer.getLineColor || [],
   };
 }
 
@@ -118,6 +119,7 @@ function geojson2Edit(layer) {
     autoHighlight: true,
     color: layer.color || '#000',
     getFillColor: layer.getFillColor || [],
+    getLineColor: layer.getLineColor || [],
     lineWidthScale: 2,
     lineWidthMinPixels: 1,
     lineWidthMaxPixels: 2,
