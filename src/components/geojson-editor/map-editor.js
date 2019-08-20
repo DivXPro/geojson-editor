@@ -89,7 +89,7 @@ export class MapEditor extends React.Component {
   altDownHandle() {
     if (this.mode === TRANSLATE_MODE) {
       this.setState({ 
-        prevMode: TRANSLATE_MODE
+        prevMode: this.mode
       });
       this.props.setMode(MODIFY_MODE);
     }
@@ -115,7 +115,7 @@ export class MapEditor extends React.Component {
   shiftDownHandle() {
     if (this.mode === TRANSLATE_MODE) {
       this.setState({
-        prevMode: ROTATE_MODE
+        prevMode: this.mode
       });
       this.props.setMode(ROTATE_MODE);
     }
