@@ -1,8 +1,8 @@
 import React from 'react';
 import { Provider } from 'react-redux'
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { combineEpics, createEpicMiddleware } from 'redux-observable';
-import geometryApp from '@/store/reducers/geometry-app';
+import geometryApp from '@/store/reducers/geojson-editor';
 import { loadDataset } from '@/store/epics/geojson-editor';
 import MapEditor from './map-editor';
 
