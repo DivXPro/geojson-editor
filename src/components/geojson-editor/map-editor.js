@@ -227,6 +227,7 @@ export class MapEditor extends React.Component {
 
   render() {
     const editableGeoJsonLayer = (this.currentLayer && !this.currentLayer.hidden) ? new EditableGeoJsonLayer(Object.assign({}, this.currentLayer, {
+      id: this.currentLayer.deckId,
       selectedFeatureIndexes: this.selectedFeatureIndexes,
       mode: this.mode === CUT_MODE ? DRAW_POLYGON : this.mode,
       lineWidthScale: 2,
