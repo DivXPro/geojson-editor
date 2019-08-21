@@ -1,4 +1,5 @@
 import React from 'react';
+import { MapView } from '@deck.gl/core'
 import DeckGL from '@deck.gl/react';
 import MapGL from 'react-map-gl';
 import uuidv4 from 'uuid/v4';
@@ -238,6 +239,7 @@ export class MapEditor extends React.Component {
         }
       },
       onEdit: ({ updatedData, editType, featureIndexes, editContext }) => {
+        console.log('editType', editType)
         let updatedSelectedFeatureIndexes = this.selectedFeatureIndexes;
         if (editType === 'removePosition' && !this.state.pointsRemovable) {
           return;
@@ -355,7 +357,11 @@ export class MapEditor extends React.Component {
             onClick={this.handleDeckClick.bind(this)}
             pickingRadius={5}
             layers={layers}
-            controller={true}>
+            views={[
+              new MapView({
+                controller: { doubleClickZoom: false }
+              })
+            ]}>
             {this.renderStaticMap(this.state.viewport)}
           </DeckGL>
         </GlobalHotKeys>
