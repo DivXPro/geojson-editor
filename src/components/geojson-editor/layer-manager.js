@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import uuidv4 from 'uuid/v4';
 import Styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { Upload, Modal, Radio } from 'antd';
@@ -8,6 +7,7 @@ import LayerItem from './layer-item';
 import { next } from '@/mapbox/next';
 import { getDatasetList } from '@/mapbox/dataset';
 import { loadDataset } from '@/store/actions/geojson-editor';
+import { makeGeoJsonLayer } from '@/utils/layer';
 
 const StyledLayerManager = Styled.section`
   background: rgb(36, 39, 48);
@@ -67,15 +67,14 @@ function LayerList(props) {
     }
     return data;
   }
-  const updateGeom = (file) => {
+  const importGeoJSON = (file) => {
     const reader = new FileReader();
     const nameArr = file.name.split('.');
     nameArr.pop();
     const name = nameArr.join('.');
     reader.readAsText(file);
     reader.onload = (e) => {
-      const layer = {
-        id: uuidv4(),
+      const layer = makeGeoJsonLayer({
         name,
         data: JSON.parse(e.target.result),
         pickable: false,
@@ -90,7 +89,7 @@ function LayerList(props) {
         getLineWidth: 1,
         getElevation: 30,
         hidden: false,
-      }
+      });
       dispatch(addLayer(layer));
     }
   }
@@ -103,9 +102,10 @@ function LayerList(props) {
     setDatasets(sets);
     setVisible(true);
   }
+
   return (
     <StyledLayerManager>
-      <Upload customRequest={e => updateGeom(e.file)} showUploadList={false} accept=".geojson,.json">
+      <Upload customRequest={e => importGeoJSON(e.file)} showUploadList={false} accept=".geojson,.json">
         <div className="button">导入GeoJSON</div>
       </Upload>
       <div className="button" onClick={handleImport}>导入Dataset</div>

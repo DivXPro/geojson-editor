@@ -213,7 +213,12 @@ export class MapEditor extends React.Component {
   }
 
   get layers() {
-    return this.props.layers.filter(layer => !layer.hidden && layer.id !== this.props.currentLayerId).map(layer => new GeoJsonLayer(layer));
+    return this.props.layers
+    .filter(layer => !layer.hidden && layer.id !== this.props.currentLayerId)
+    .map(layer => {
+      layer.id = layer.deckId;
+      return new GeoJsonLayer(layer);
+    });
   }
 
   get currentLayer() {
@@ -239,7 +244,6 @@ export class MapEditor extends React.Component {
         }
       },
       onEdit: ({ updatedData, editType, featureIndexes, editContext }) => {
-        console.log('editType', editType)
         let updatedSelectedFeatureIndexes = this.selectedFeatureIndexes;
         if (editType === 'removePosition' && !this.state.pointsRemovable) {
           return;

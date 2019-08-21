@@ -4,29 +4,17 @@ import { ofType } from 'redux-observable';
 import { getFeatureList } from '@/mapbox/feature';
 import { next } from '@/mapbox/next';
 import { LOAD_DATASET_DATA, addLayer } from '../actions/geojson-editor';
+import { makeGeoJsonLayer } from '@/utils/layer';
 
 export const loadDataset = (action$, state$) => action$.pipe(
   ofType(LOAD_DATASET_DATA),
   mergeMap(action => {
     return fromPromise(getFeatures(action.datasetId)).pipe(
-      map(data => addLayer({
-        id: action.datasetId,
+      map(data => addLayer(makeGeoJsonLayer({
         sourceId: action.datasetId,
         name: action.name,
         data,
-        pickable: false,
-        stroked: false,
-        filled: true,
-        extruded: false,
-        lineWidthScale: 1,
-        lineWidthMinPixels: 2,
-        lineWidthMaxPixels: 3,
-        getFillColor: [160, 160, 180, 200],
-        // getLineColor: d => colorToRGBArray(d.properties.color),
-        getRadius: 100,
-        getLineWidth: 1,
-        getElevation: 30,
-      })),
+      }))),
       catchError(err => console.log('err', err))
     )
   })

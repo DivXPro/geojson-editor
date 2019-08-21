@@ -1,5 +1,4 @@
 import Immutable from 'immutable';
-import uuidv4 from 'uuid/v4';
 import {
   SET_CURRENT_LAYER,
   SET_GEOMETRY,
@@ -14,27 +13,11 @@ import {
   REMOVE_FEATURE,
 } from '../actions/geojson-editor';
 
-const defaultLayer = {
-  id: uuidv4(),
-  name: 'untitled',
-  data: {
-    type: 'FeatureCollection',
-    features: []
-  },
-  pickable: true,
-  autoHighlight: true,
-  color: '#F5A623',
-  getFillColor: [245, 166, 35, 100],
-  lineWidthScale: 2,
-  lineWidthMinPixels: 1,
-  lineWidthMaxPixels: 2,
-};
+import { makeDeckGeoJsonLayer, edit2Geojson, geojson2Edit } from '@/utils/layer';
+
+const defaultLayer = makeDeckGeoJsonLayer();
 
 const initState = {
-  geometry: {
-    type: 'FeatureCollection',
-    features: []
-  },
   layers: [defaultLayer],
   currentLayerId: defaultLayer.id,
   selectedFeatureIndexes: [],
@@ -83,47 +66,6 @@ function setCurrentLayer(state, id) {
     .set('layers', layers)
     .set('currentLayerId', newLayer.id)
     .toJS();
-}
-
-function edit2Geojson(layer) {
-  return {
-    id: uuidv4(),
-    sourceId: layer.sourceId,
-    name: layer.name,
-    data: layer.data,
-    pickable: true,
-    autoHighlight: false,
-    stroked: false,
-    filled: true,
-    extruded: false,
-    lineWidthScale: 1,
-    lineWidthMinPixels: 2,
-    lineWidthMaxPixels: 3,
-    getRadius: 100,
-    getLineWidth: 1,
-    getElevation: 30,
-    hidden: false,
-    color: layer.color || '#000',
-    getFillColor: layer.getFillColor || [],
-    getLineColor: layer.getLineColor || [],
-  };
-}
-
-function geojson2Edit(layer) {
-  return {
-    id: uuidv4(),
-    sourceId: layer.sourceId,
-    name: layer.name,
-    data: layer.data,
-    pickable: true,
-    autoHighlight: true,
-    color: layer.color || '#000',
-    getFillColor: layer.getFillColor || [],
-    getLineColor: layer.getLineColor || [],
-    lineWidthScale: 2,
-    lineWidthMinPixels: 1,
-    lineWidthMaxPixels: 2,
-  };
 }
 
 function addFeature(layers, id, feature) {
