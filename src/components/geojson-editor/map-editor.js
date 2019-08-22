@@ -182,10 +182,13 @@ export class MapEditor extends React.Component {
   }
 
   delHandle() {
+    console.log('delHandle', this.selectedFeatureIndexes);
     if (this.selectedFeatureIndexes.length > 0) {
-      this.selectedFeatureIndexes.forEach(idx => {
-        this.props.removeFeature(idx);
-      });
+      const actions = this.makeHistory(this.props.currentLayerId, 'deleteFeature', {
+        delete: this.selectedFeatureIndexes.map(idx => this.currentLayer.data.features[idx].id)
+      }, this.currentLayer.data.features);
+      console.log('actions', actions)
+      this.props.addDrawHistory(actions);
       this.setState({
         selectedFeatureIndexes: [],
       });

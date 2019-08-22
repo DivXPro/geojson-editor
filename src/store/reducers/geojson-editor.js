@@ -1,11 +1,7 @@
 import Immutable from 'immutable';
 import {
   SET_CURRENT_LAYER,
-  SET_GEOMETRY,
   SET_SELECT_FEATURE_INDEXES,
-  ADD_FEATURE,
-  SET_FEATURE,
-  REMOVE_FEATURE,
   SET_MODE,
   ADD_LAYER,
   SET_LAYER,
@@ -65,36 +61,6 @@ function setCurrentLayer(state, id) {
     .toJS();
 }
 
-function addFeature(layers, id, feature) {
-  const layer = layers.find(l => l.id === id);
-  const features = Immutable.List(layer.data.features).toJS();
-  if (Array.isArray(feature)) {
-    features.push(...feature);
-  } else {
-    features.push(feature);
-  }
-  const data = Immutable.set(layer.data, 'features', features);
-  return setLayer(layers, Immutable.set(layer, 'data', data));
-}
-
-function setFeature(layers, id, index, feature) {
-  const layerIndex = layers.findIndex(l => l.id === id);
-  return Immutable.set(
-    layers,
-    layerIndex,
-    Immutable.set(layers[layerIndex], 'data', Immutable.set(layers[layerIndex].data, 'features', Immutable.set(layers[layerIndex].data.features, index, feature))),
-  );
-}
-
-function removeFeature(layers, id, index) {
-  const layerIndex = layers.findIndex(l => l.id === id);
-  return Immutable.set(
-    layers,
-    layerIndex,
-    Immutable.set(layers[layerIndex], 'data', Immutable.set(layers[layerIndex].data, 'features', Immutable.remove(layers[layerIndex].data.features, index))),
-  )
-}
-
 function addLayer(layers, layer) {
   if (layers.findIndex(l => l.id === layer.id) === -1) {
     return Immutable.set(layers, layers.length, layer);
@@ -147,7 +113,7 @@ function doAction(layer, action) {
     });
   }
   if (action.deleteActions) {
-    features = layer.data.features.filter(f => action.deleteActions.some(a => a.id === f.id));
+    features = layer.data.features.filter(f => action.deleteActions.some(a => a.id !== f.id));
   }
   return Immutable.set(layer, 'data', Immutable.set(layer.data, 'features', features));
 }
