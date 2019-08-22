@@ -3,7 +3,6 @@ import PanelHeader from '../side-panel/panel-header';
 import FeatureProfile from './feature-profile';
 import LayerManager from './layer-manager';
 import { StyledSidePanel, StyledSideContainer} from '../side-panel/side-panel';
-import JsonEditor from './json-editor';
 import Property from './property';
 
 function SideBar (props) {

@@ -29,12 +29,14 @@ const keyMap = {
   SHIFT: 'shift',
   SHIFT_DOWN: { sequence: 'shift', action: 'keydown' },
   SHIFT_UP: { sequence: 'shift', action: 'keyup' },
-  CTRL_AND_C: ['ctrl+c', 'command+c'],
-  CTRL_AND_V: ['ctrl+v', 'command+v'],
+  CTRL_C: ['ctrl+c', 'command+c'],
+  CTRL_V: ['ctrl+v', 'command+v'],
   ALT_DOWN: { sequence: 'alt', action: 'keydown' },
   ALT_UP: { sequence: 'alt', action: 'keyup' },
   ENTER: 'enter',
-  DEL: ['del', 'backspace']
+  DEL: ['del', 'backspace'],
+  CTRL_Z: ['ctrl+z', 'command+z'],
+  SHIFT_CTRL_Z: ['shift+ctrl+z', 'shift+command+z']
 };
 
 function mapStateToProps(state) {
@@ -166,6 +168,10 @@ export class MapEditor extends React.Component {
     this.pasteFeature();
   }
 
+  ctrlAndZHandle() {
+    this.props.rollBack();
+  }
+
   copyFeature() {
     if (this.selectedFeatureIndexes.length > 0 && this.currentLayer) {
       const features = this.currentLayer.data.features.filter((f, fidx) => this.selectedFeatureIndexes.findIndex(idx => idx === fidx) > -1);
@@ -182,12 +188,10 @@ export class MapEditor extends React.Component {
   }
 
   delHandle() {
-    console.log('delHandle', this.selectedFeatureIndexes);
     if (this.selectedFeatureIndexes.length > 0) {
       const actions = this.makeHistory(this.props.currentLayerId, 'deleteFeature', {
         delete: this.selectedFeatureIndexes.map(idx => this.currentLayer.data.features[idx].id)
       }, this.currentLayer.data.features);
-      console.log('actions', actions)
       this.props.addDrawHistory(actions);
       this.setState({
         selectedFeatureIndexes: [],
@@ -328,7 +332,7 @@ export class MapEditor extends React.Component {
     } else {
       this.setTempData(editType, this.currentLayer.data);
       this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
-      // this.props.setGeometry(Object.assign({}, updatedData));
+      this.props.setGeometry(Object.assign({}, updatedData));
     }
 
     // this.props.addDrawHistory(this.makeHistory(editType, this.props.currentLayerId, featureIndexes, updatedData.features));
@@ -358,14 +362,15 @@ export class MapEditor extends React.Component {
       onEdit: this.onEdit.bind(this),
     })): null;
     const handleKeyPress = {
-      CTRL_AND_C: this.ctrlAndCHandle.bind(this),
-      CTRL_AND_V: this.ctrlAndVHandle.bind(this),
+      CTRL_C: this.ctrlAndCHandle.bind(this),
+      CTRL_V: this.ctrlAndVHandle.bind(this),
       ALT_DOWN: this.altDownHandle.bind(this),
       ALT_UP: this.altUpHandle.bind(this),
       SHIFT_DOWN: this.shiftDownHandle.bind(this),
       SHIFT_UP: this.shiftUpHandle.bind(this),
       DEL: this.delHandle.bind(this),
-      ENTER: this.enterHandle.bind(this)
+      ENTER: this.enterHandle.bind(this),
+      CTRL_Z: this.ctrlAndZHandle.bind(this)
     };
 
     const toggles = [
