@@ -9,7 +9,7 @@ import { EditableGeoJsonLayer } from 'nebula.gl';
 import { GeoJsonLayer } from '@deck.gl/layers';
 import cutGeometry from '@/utils/cut-geometry';
 import ControlPlanel from '@/components/control-panel/control-panel';
-import { setGeometry, setSelectFeatureIndexes, setMode, removeFeature, loadDataset, addFeature, addDrawHistory } from '@/store/actions/geojson-editor';
+import { setGeometry, setSelectFeatureIndexes, setMode, loadDataset, addDrawHistory } from '@/store/actions/geojson-editor';
 import SideBar from './side-bar';
 
 const DRAW_LINE_STRING = 'drawLineString';
@@ -53,9 +53,7 @@ function mapDispatchToProps(dispatch) {
     setGeometry: geometry => dispatch(setGeometry(geometry)),
     setSelectFeatureIndexes: indexes => dispatch(setSelectFeatureIndexes(indexes)),
     setMode: mode => dispatch(setMode(mode)),
-    removeFeature: index => dispatch(removeFeature(index)),
     loadDataset: datasetId => dispatch(loadDataset(datasetId)),
-    addFeature: features => dispatch(addFeature(features)),
     addDrawHistory: history => dispatch(addDrawHistory(history)),
   }
 }
@@ -174,7 +172,8 @@ export class MapEditor extends React.Component {
 
   copyFeature() {
     if (this.selectedFeatureIndexes.length > 0 && this.currentLayer) {
-      const features = this.currentLayer.data.features.filter((f, fidx) => this.selectedFeatureIndexes.findIndex(idx => idx === fidx) > -1);
+      const features = this.currentLayer.data.features
+        .filter((f, fidx) => this.selectedFeatureIndexes.findIndex(idx => idx === fidx) > -1);
       this.setState({
         copyFeatures: features.map(f => ({ ...f, id: uuidv4()}))
       });
@@ -183,7 +182,17 @@ export class MapEditor extends React.Component {
 
   pasteFeature() {
     if (this.state.copyFeatures != null && this.state.copyFeatures.length > 0) {
-      this.props.addFeature(this.state.copyFeatures)
+      const historyIds = {
+        add: this.state.copyFeatures.map(f => f.id)
+      }
+      const actions = this.makeHistory(
+        this.props.currentLayerId,
+        'copyFeatures',
+        historyIds,
+        null,
+        this.state.copyFeatures
+      );
+      this.props.addDrawHistory(actions);
     }
   }
 
@@ -238,14 +247,10 @@ export class MapEditor extends React.Component {
     }
   }
 
-  removeFeatureByIndex(index: number) {
-    this.props.removeFeature(index);
-  }
-  
-
   handleDeckClick(e) {
     if (
-      [DRAW_LINE_STRING, DRAW_POLYGON, DRAW_90_DEGREE_POLYGON, DRAW_CIRCLE_FROM_CENTER, DRAW_POINT, CUT_MODE, SPLIT_MODE].findIndex(m => m === this.mode) === -1
+      [DRAW_LINE_STRING, DRAW_POLYGON, DRAW_90_DEGREE_POLYGON, DRAW_CIRCLE_FROM_CENTER, DRAW_POINT, CUT_MODE, SPLIT_MODE]
+        .findIndex(m => m === this.mode) === -1
     ) {
       if (e.index === -1 && e.object == null) {
         this.props.setSelectFeatureIndexes([]);

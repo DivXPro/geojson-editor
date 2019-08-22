@@ -28,6 +28,7 @@ const initState = {
 function geometryApp(state = initState, action) {
   switch (action.type) {
     case SET_GEOMETRY:
+      return Immutable.set(state, 'layers', setLayerData(state.layers, state.currentLayerId, action.geometry));
     case SET_CURRENT_LAYER:
       return setCurrentLayer(state, action.id);
     case SET_SELECT_FEATURE_INDEXES:
@@ -76,6 +77,11 @@ function setLayer(layers, layer) {
   if (index > -1) {
     return Immutable.set(layers, index, layer);
   }
+}
+
+function setLayerData(layers, id, data) {
+  const index = layers.findIndex(l => l.id === id);
+  return setLayer(layers, Immutable.set(layers[index], 'data', data))
 }
 
 function setLayerName(layers, id, name) {

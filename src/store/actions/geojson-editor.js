@@ -2,22 +2,22 @@
  * action 类型
  */
 
-export const SET_CURRENT_LAYER = 'SET_CURRENT_LAYER';
 export const SET_GEOMETRY = 'SET_GEOMETRY';
-export const ADD_FEATURE = 'ADD_FEATURE';
-export const SET_FEATURE = 'SET_FEATURE';
-export const REMOVE_FEATURE = 'REMOVE_FEATURE';
+export const SET_CURRENT_LAYER = 'SET_CURRENT_LAYER';
 export const SET_SELECT_FEATURE_INDEXES = 'SET_SELECT_FEATURE_INDEXES';
 export const SET_MODE = 'SET_MODE';
 export const ADD_LAYER = 'ADD_LAYER';
 export const REMOVE_LAYER = 'REMOVE_LAYER';
 export const SET_LAYER = 'SET_LAYER';
 export const SET_LAYER_NAME = 'SET_LAYER_NAME';
+export const ADD_DRAW_HISTORY = 'ADD_DRAW_HISTORY';
+export const UNDO = 'UNDO';
+export const REDO = 'REDO';
+
+// mapbox api 相关
 export const LOAD_DATASET = 'LOAD_DATASET';
 export const LOAD_DATASET_DATA = 'LOAD_DATASET';
 export const LOAD_DATASET_LIST = 'LOAD_DATASET_LIST';
-export const ADD_DRAW_HISTORY = 'ADD_DRAW_HISTORY';
-// mapbox api 相关
 
 /*
  * action 创建函数
@@ -28,18 +28,6 @@ export function setCurrentLayer(id) {
 
 export function setGeometry(geometry) {
   return { type: SET_GEOMETRY, geometry };
-}
-
-export function addFeature(feature) {
-  return { type: ADD_FEATURE, feature };
-}
-
-export function setFeature(index, feature) {
-  return { type: SET_FEATURE, index, feature };
-}
-
-export function removeFeature(index) {
-  return { type: REMOVE_FEATURE, index };
 }
 
 export function setSelectFeatureIndexes(indexes) {
@@ -72,4 +60,12 @@ export function loadDataset(datasetId, name) {
 
 export function addDrawHistory(actions) {
   return { type: ADD_DRAW_HISTORY, actions };
+}
+
+export function undo() {
+  return { type: UNDO };
+}
+
+export function redo() {
+  return { type: REDO };
 }
