@@ -4,8 +4,8 @@ import uuidv4 from 'uuid/v4';
 export function makeDeckGeoJsonLayer(layer) {
   const id = uuidv4();
   return Object.assign({}, {
+    uid: id,
     id: id,
-    deckId: id,
     name: 'untitled',
     data: {
       type: 'FeatureCollection',
@@ -48,8 +48,8 @@ export function makeGeoJsonLayer(layer) {
 
 export function edit2Geojson(layer) {
   return {
-    id: layer.id,
-    deckId: uuidv4(),
+    uid: layer.uid,
+    id: uuidv4(),
     sourceId: layer.sourceId,
     name: layer.name,
     data: layer.data,
@@ -73,8 +73,8 @@ export function edit2Geojson(layer) {
 
 export function geojson2Edit(layer) {
   return {
-    id: layer.id,
-    deckId: uuidv4(),
+    uid: layer.uid,
+    id: uuidv4(),
     sourceId: layer.sourceId,
     name: layer.name,
     data: layer.data,

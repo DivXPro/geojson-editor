@@ -16,6 +16,7 @@ export const SET_LAYER_NAME = 'SET_LAYER_NAME';
 export const LOAD_DATASET = 'LOAD_DATASET';
 export const LOAD_DATASET_DATA = 'LOAD_DATASET';
 export const LOAD_DATASET_LIST = 'LOAD_DATASET_LIST';
+export const ADD_DRAW_HISTORY = 'ADD_DRAW_HISTORY';
 // mapbox api 相关
 
 /*
@@ -67,4 +68,8 @@ export function setLayerName(id, name) {
 
 export function loadDataset(datasetId, name) {
   return { type: LOAD_DATASET_DATA, datasetId, name }
+}
+
+export function addDrawHistory(actions) {
+  return { type: ADD_DRAW_HISTORY, actions };
 }

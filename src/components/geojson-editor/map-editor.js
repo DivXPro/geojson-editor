@@ -9,7 +9,7 @@ import { EditableGeoJsonLayer } from 'nebula.gl';
 import { GeoJsonLayer } from '@deck.gl/layers';
 import cutGeometry from '@/utils/cut-geometry';
 import ControlPlanel from '@/components/control-panel/control-panel';
-import { setGeometry, setSelectFeatureIndexes, setMode, removeFeature, loadDataset, addFeature } from '@/store/actions/geojson-editor';
+import { setGeometry, setSelectFeatureIndexes, setMode, removeFeature, loadDataset, addFeature, addDrawHistory } from '@/store/actions/geojson-editor';
 import SideBar from './side-bar';
 
 const DRAW_LINE_STRING = 'drawLineString';
@@ -39,7 +39,6 @@ const keyMap = {
 
 function mapStateToProps(state) {
   return {
-    geometry: state.geometry,
     mode: state.mode,
     selectedFeatureIndexes: state.selectedFeatureIndexes,
     layers: state.layers,
@@ -55,6 +54,7 @@ function mapDispatchToProps(dispatch) {
     removeFeature: index => dispatch(removeFeature(index)),
     loadDataset: datasetId => dispatch(loadDataset(datasetId)),
     addFeature: features => dispatch(addFeature(features)),
+    addDrawHistory: history => dispatch(addDrawHistory(history)),
   }
 }
 
@@ -66,11 +66,8 @@ export class MapEditor extends React.Component {
       viewport: props.viewport,
       copyFeatures: null,
       prevMode: null,
+      tempData: null,
     }
-  }
-
-  get geometry() {
-    return this.props.geometry;
   }
 
   get mode() {
@@ -85,6 +82,36 @@ export class MapEditor extends React.Component {
     if (this.mode !== VIEW_MODE) {
       this.setViewMode();
     }
+  }
+
+  makeHistory(layerId, type, historyIds, prevFeatures, nextFeatures) {
+    const deleteActions = historyIds.delete ? historyIds.delete.map(id => (
+      {
+        id,
+        action: 'delete',
+        prev: prevFeatures.find(f => f.id === id),
+        next: null,
+      }
+    )) : undefined;
+    const modifyActions = historyIds.modify ? historyIds.modify.map(id => ({
+      id,
+      action: 'modify',
+      prev: prevFeatures.find(f => f.id === id),
+      next: nextFeatures.find(f => f.id === id),
+    })) : undefined;
+    const addActions = historyIds.add ? historyIds.add.map(id => ({
+      id,
+      action: 'add',
+      prev: null,
+      next: nextFeatures.find(f => f.id === id),
+    })) : historyIds.add;
+    return {
+      layerId,
+      type,
+      deleteActions,
+      modifyActions,
+      addActions,
+    };
   }
 
   altDownHandle() {
@@ -187,9 +214,27 @@ export class MapEditor extends React.Component {
     this.props.setSelectFeatureIndexes([]);
   }
 
+  setTempData(type, data) {
+    if (this.state.tempData == null) {
+      this.setState({ 
+        tempData: {
+          type,
+          data,
+        }
+      });
+    }
+  }
+
+  clearTempData() {
+    if (this.state.tempData) {
+      this.setState({ tempData: null });
+    }
+  }
+
   removeFeatureByIndex(index: number) {
     this.props.removeFeature(index);
   }
+  
 
   handleDeckClick(e) {
     if (
@@ -215,19 +260,82 @@ export class MapEditor extends React.Component {
   get layers() {
     return this.props.layers
     .filter(layer => !layer.hidden && layer.id !== this.props.currentLayerId)
-    .map(layer => {
-      layer.id = layer.deckId;
-      return new GeoJsonLayer(layer);
-    });
+    .map(layer => new GeoJsonLayer(layer));
   }
 
   get currentLayer() {
     return this.props.layers.find(layer => layer.id === this.props.currentLayerId);
   }
 
+  onEdit = ({ updatedData, editType, featureIndexes, editContext }) => {
+    let updatedSelectedFeatureIndexes = this.selectedFeatureIndexes;
+    if (editType === 'removePosition' && !this.state.pointsRemovable) {
+      return;
+    }
+    updatedData.features = updatedData.features.map(f => f.id ? f : Object.assign({}, f, { id: uuidv4() }));
+    if (editType === 'addFeature') {
+      if (this.mode === CUT_MODE) {
+        const sharp = updatedData.features[featureIndexes[0]];
+        updatedData.features.splice(featureIndexes[0], 1);
+        const { geometry, actionIds } = cutGeometry(updatedData, sharp);
+        updatedSelectedFeatureIndexes = [];
+        this.props.setMode(VIEW_MODE);
+        const actions = this.makeHistory(
+          this.props.currentLayerId,
+          'maskFeature',
+          actionIds,
+          this.currentLayer.data.features, geometry.features,
+        );
+        this.props.addDrawHistory(actions);
+        // this.props.setGeometry(geometry)
+        this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
+        return;
+      }
+      const actionIds = {
+        add: updatedData.features
+          .filter((f, idx) => featureIndexes.some(i => i === idx))
+          .map(f => f.id),
+      };
+      const actions = this.makeHistory(
+        this.props.currentLayerId,
+        editType, actionIds,
+        this.currentLayer.data.features,
+        updatedData.features
+      );
+      this.props.addDrawHistory(actions);
+      this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
+      // this.props.setGeometry(Object.assign({}, updatedData));
+    } else if (['translated', 'addPosition', 'finishMovePosition', 'rotated', 'scaled', 'split'].some(t => t === editType)) {
+      this.clearTempData();
+      const actionIds = {
+        'modify': updatedData.features
+          .filter((f, idx) => featureIndexes.some(i => i === idx))
+          .map(f => f.id),
+      };
+      const actions = this.makeHistory(
+        this.props.currentLayerId,
+        editType,
+        actionIds,
+        this.currentLayer.data.features,
+        updatedData.features
+      );
+      this.props.addDrawHistory(actions);
+      this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
+      // this.props.setGeometry(Object.assign({}, updatedData));
+    } else {
+      this.setTempData(editType, this.currentLayer.data);
+      this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
+      // this.props.setGeometry(Object.assign({}, updatedData));
+    }
+
+    // this.props.addDrawHistory(this.makeHistory(editType, this.props.currentLayerId, featureIndexes, updatedData.features));
+    // this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
+    // this.props.setGeometry(Object.assign({}, updatedData));
+  }
+
   render() {
     const editableGeoJsonLayer = (this.currentLayer && !this.currentLayer.hidden) ? new EditableGeoJsonLayer(Object.assign({}, this.currentLayer, {
-      id: this.currentLayer.deckId,
+      id: this.currentLayer.id,
       selectedFeatureIndexes: this.selectedFeatureIndexes,
       mode: this.mode === CUT_MODE ? DRAW_POLYGON : this.mode,
       lineWidthScale: 2,
@@ -244,32 +352,9 @@ export class MapEditor extends React.Component {
           this.props.setMode(TRANSLATE_MODE);
         }
       },
-      onEdit: ({ updatedData, editType, featureIndexes, editContext }) => {
-        let updatedSelectedFeatureIndexes = this.selectedFeatureIndexes;
-        if (editType === 'removePosition' && !this.state.pointsRemovable) {
-          return;
-        }
-        if (editType === 'addFeature') {
-          if (this.mode === CUT_MODE) {
-            updatedData = cutGeometry(updatedData, updatedData.features[featureIndexes[0]]);
-            updatedSelectedFeatureIndexes = [];
-            this.props.setMode(VIEW_MODE);
-            updatedData.features = updatedData.features.map(f => f.id ? f : Object.assign({}, f, { id: uuidv4() }));
-            this.props.setGeometry(updatedData)
-            this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
-            return;
-          } else if (this.mode !== 'duplicate') {
-            featureIndexes = featureIndexes || editContext.featureIndexes;
-            updatedSelectedFeatureIndexes = [...this.props.selectedFeatureIndexes, ...featureIndexes];
-          }
-        }
-        updatedData.features = updatedData.features.map(f => f.id ? f : Object.assign({}, f, { id: uuidv4() }));
-        this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
-        this.props.setGeometry(updatedData);
-      }
+      onEdit: this.onEdit.bind(this),
     })): null;
     const handleKeyPress = {
-      // SHIFT: this.shiftHandle.bind(this),
       CTRL_AND_C: this.ctrlAndCHandle.bind(this),
       CTRL_AND_V: this.ctrlAndVHandle.bind(this),
       ALT_DOWN: this.altDownHandle.bind(this),

@@ -5,12 +5,13 @@ import {
   SET_SELECT_FEATURE_INDEXES,
   ADD_FEATURE,
   SET_FEATURE,
+  REMOVE_FEATURE,
   SET_MODE,
   ADD_LAYER,
   SET_LAYER,
   SET_LAYER_NAME,
   REMOVE_LAYER,
-  REMOVE_FEATURE,
+  ADD_DRAW_HISTORY,
 } from '../actions/geojson-editor';
 
 import { makeDeckGeoJsonLayer, edit2Geojson, geojson2Edit } from '@/utils/layer';
@@ -22,22 +23,16 @@ const initState = {
   currentLayerId: defaultLayer.id,
   selectedFeatureIndexes: [],
   mode: 'view',
+  history: [],
 };
+
 
 function geometryApp(state = initState, action) {
   switch (action.type) {
     case SET_CURRENT_LAYER:
       return setCurrentLayer(state, action.id);
-    case SET_GEOMETRY:
-      return Immutable.set(state, 'layers', setLayerData(state.layers, state.currentLayerId, action.geometry));
-    case ADD_FEATURE:
-      return Immutable.set(state, 'layers', addFeature(state.layers, state.currentLayerId, action.feature));
     case SET_SELECT_FEATURE_INDEXES:
       return Immutable.set(state, 'selectedFeatureIndexes', action.indexes);
-    case SET_FEATURE:
-      return Immutable.set(state, 'layers', setFeature(state.layers, state.currentLayerId, action.index, action.feature));
-    case REMOVE_FEATURE:
-      return Immutable.set(state, 'layers', removeFeature(state.layers, state.currentLayerId, action.index));
     case SET_MODE:
       return Immutable.set(state, 'mode', action.mode);
     case ADD_LAYER:
@@ -48,6 +43,8 @@ function geometryApp(state = initState, action) {
       return Immutable.set(state, 'layers', setLayerName(state.layers, action.id, action.name));
     case REMOVE_LAYER:
       return Immutable.set(state, 'layers', removeLayer(state.layers, action.id));
+    case ADD_DRAW_HISTORY:
+      return addDrawHistory(state, action.actions);
     default:
       return state;
   }
@@ -127,6 +124,32 @@ function removeLayer(layers, id) {
   if (index > -1) {
     return Immutable.remove(layers, index);
   }
+}
+
+function addDrawHistory(state, actions) {
+  const layerIndex = state.layers.findIndex(l => l.id === actions.layerId);
+  state = Immutable.set(state, 'layers', Immutable.set(state.layers, layerIndex, doAction(state.layers[layerIndex], actions)));
+  return Immutable.set(state, 'history', Immutable.set(state.history, state.history.length, actions))
+}
+
+function doAction(layer, action) {
+  let features = Immutable.List(layer.data.features).toJS();
+  if (action.addActions) {
+    const newFeatures = action.addActions.map(a => a.next);
+    features.push(...newFeatures);
+  }
+  if (action.modifyActions) {
+    action.modifyActions.forEach(a => {
+      const index = features.findIndex(f => f.id === a.id);
+      if (index > -1) {
+        layer.data.features[index] = a.next;
+      }
+    });
+  }
+  if (action.deleteActions) {
+    features = layer.data.features.filter(f => action.deleteActions.some(a => a.id === f.id));
+  }
+  return Immutable.set(layer, 'data', Immutable.set(layer.data, 'features', features));
 }
 
 export default geometryApp;
