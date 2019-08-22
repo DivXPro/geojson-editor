@@ -80,11 +80,6 @@ function setLayerName(layers, id, name) {
   return Immutable.set(layers, index, Immutable.set(layers[index], 'name', name));
 }
 
-function setLayerData(layers, id, data) {
-  const index = layers.findIndex(l => l.id === id);
-  return setLayer(layers, Immutable.set(layers[index], 'data', data))
-}
-
 function removeLayer(layers, id) {
   const index = layers.findIndex(l => l.id === id);
   if (index > -1) {
