@@ -237,7 +237,9 @@ export class MapEditor extends React.Component {
   }
 
   setTempData(type, data) {
+    console.log('set TempData');
     if (this.state.tempData == null) {
+      console.log('is null');
       this.setState({ 
         tempData: {
           type,
@@ -324,7 +326,7 @@ export class MapEditor extends React.Component {
       this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
       // this.props.setGeometry(Object.assign({}, updatedData));
     } else if (['translated', 'addPosition', 'finishMovePosition', 'rotated', 'scaled', 'split'].some(t => t === editType)) {
-      this.clearTempData();
+      const useTempData = ['translated', 'finishMovePosition', 'rotated', 'scaled'].some(t => t === editType);
       const actionIds = {
         'modify': updatedData.features
           .filter((f, idx) => featureIndexes.some(i => i === idx))
@@ -334,9 +336,10 @@ export class MapEditor extends React.Component {
         this.props.currentLayerId,
         editType,
         actionIds,
-        this.currentLayer.data.features,
+        useTempData ? this.state.tempData.data.features : this.currentLayer.data.features,
         updatedData.features
       );
+      this.clearTempData();
       this.props.addDrawHistory(actions);
       this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
       // this.props.setGeometry(Object.assign({}, updatedData));

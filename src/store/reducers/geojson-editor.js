@@ -147,7 +147,7 @@ function doAction(layer, actions) {
     actions.modifyActions.forEach(a => {
       const index = features.findIndex(f => f.id === a.id);
       if (index > -1) {
-        layer.data.features[index] = a.next;
+        features[index] = a.next;
       }
     });
   }
@@ -166,7 +166,8 @@ function undoHistory(layer, actions) {
     actions.modifyActions.forEach(a => {
       const index = features.findIndex(f => f.id === a.id);
       if (index > -1) {
-        layer.data.features[index] = a.prev;
+        console.log('undo prev', a.prev);
+        features[index] = a.prev;
       }
     });
   }
