@@ -237,9 +237,7 @@ export class MapEditor extends React.Component {
   }
 
   setTempData(type, data) {
-    console.log('set TempData');
     if (this.state.tempData == null) {
-      console.log('is null');
       this.setState({ 
         tempData: {
           type,
