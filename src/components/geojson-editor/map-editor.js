@@ -9,7 +9,7 @@ import { EditableGeoJsonLayer } from 'nebula.gl';
 import { GeoJsonLayer } from '@deck.gl/layers';
 import cutGeometry from '@/utils/cut-geometry';
 import ControlPlanel from '@/components/control-panel/control-panel';
-import { setGeometry, setSelectFeatureIndexes, setMode, loadDataset, addDrawHistory } from '@/store/actions/geojson-editor';
+import { setGeometry, setSelectFeatureIndexes, setMode, loadDataset, addDrawHistory, undo, redo } from '@/store/actions/geojson-editor';
 import SideBar from './side-bar';
 
 const DRAW_LINE_STRING = 'drawLineString';
@@ -55,6 +55,8 @@ function mapDispatchToProps(dispatch) {
     setMode: mode => dispatch(setMode(mode)),
     loadDataset: datasetId => dispatch(loadDataset(datasetId)),
     addDrawHistory: history => dispatch(addDrawHistory(history)),
+    undo: () => dispatch(undo()),
+    redo: () => dispatch(redo()),
   }
 }
 
@@ -167,7 +169,11 @@ export class MapEditor extends React.Component {
   }
 
   ctrlAndZHandle() {
-    this.props.rollBack();
+    this.props.undo();
+  }
+
+  shiftAndCtrlAndZHandle() {
+    this.props.redo();
   }
 
   copyFeature() {
@@ -375,7 +381,8 @@ export class MapEditor extends React.Component {
       SHIFT_UP: this.shiftUpHandle.bind(this),
       DEL: this.delHandle.bind(this),
       ENTER: this.enterHandle.bind(this),
-      CTRL_Z: this.ctrlAndZHandle.bind(this)
+      CTRL_Z: this.ctrlAndZHandle.bind(this),
+      SHIFT_CTRL_Z: this.shiftAndCtrlAndZHandle.bind(this)
     };
 
     const toggles = [

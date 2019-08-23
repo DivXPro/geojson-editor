@@ -9,6 +9,8 @@ import {
   SET_LAYER_NAME,
   REMOVE_LAYER,
   ADD_DRAW_HISTORY,
+  UNDO,
+  REDO,
 } from '../actions/geojson-editor';
 
 import { makeDeckGeoJsonLayer, edit2Geojson, geojson2Edit } from '@/utils/layer';
@@ -45,6 +47,10 @@ function geometryApp(state = initState, action) {
       return Immutable.set(state, 'layers', removeLayer(state.layers, action.id));
     case ADD_DRAW_HISTORY:
       return addDrawHistory(state, action.actions);
+    case UNDO:
+      return undo(state);
+    case REDO:
+      return redo(state);
     default:
       return state;
   }
