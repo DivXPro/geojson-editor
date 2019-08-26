@@ -1,10 +1,9 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Immutable from 'immutable';
-
 import exportJson from '@/utils/export-json';
 import PanelHeader from '../side-panel/panel-header';
-import StyledSidePanel from '../side-panel/side-panel';
+import { StyledSidePanel, StyledSideContainer } from '../side-panel/side-panel';
 import { setCurrentMarker } from '@/store/actions/marker-editor';
 import MarkerProfile from './marker-profile';
 
@@ -29,10 +28,12 @@ function SideBar(props) {
   }
 
   return (
-    <StyledSidePanel>
-      <PanelHeader {...headerProps}></PanelHeader>
-      <MarkerProfile onChange={handleSetCurrentMarkKV.bind(this)} />
-    </StyledSidePanel>
+    <StyledSideContainer>
+      <StyledSidePanel>
+        <PanelHeader {...headerProps}></PanelHeader>
+        <MarkerProfile onChange={handleSetCurrentMarkKV.bind(this)} />
+      </StyledSidePanel>
+    </StyledSideContainer>
   )
 }
 
