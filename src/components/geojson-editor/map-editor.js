@@ -23,7 +23,7 @@ const SCALE_MODE = 'scale';
 const ROTATE_MODE = 'rotate';
 const TRANSLATE_MODE = 'translate';
 const VIEW_MODE = 'view';
-const CUT_MODE = 'cut';
+const MASK_MODE = 'mask';
 
 const keyMap = {
   SHIFT: 'shift',
@@ -231,8 +231,8 @@ export class MapEditor extends React.Component {
   }
 
   // 切割模式
-  setCutMode() {
-    this.props.setMode(CUT_MODE);
+  setMaskMode() {
+    this.props.setMode(MASK_MODE);
     this.props.setSelectFeatureIndexes([]);
   }
 
@@ -255,7 +255,7 @@ export class MapEditor extends React.Component {
 
   handleDeckClick(e) {
     if (
-      [DRAW_LINE_STRING, DRAW_POLYGON, DRAW_90_DEGREE_POLYGON, DRAW_CIRCLE_FROM_CENTER, DRAW_POINT, CUT_MODE, SPLIT_MODE]
+      [DRAW_LINE_STRING, DRAW_POLYGON, DRAW_90_DEGREE_POLYGON, DRAW_CIRCLE_FROM_CENTER, DRAW_POINT, MASK_MODE, SPLIT_MODE]
         .findIndex(m => m === this.mode) === -1
     ) {
       if (e.index === -1 && e.object == null) {
@@ -292,7 +292,7 @@ export class MapEditor extends React.Component {
     }
     updatedData.features = updatedData.features.map(f => f.id ? f : Object.assign({}, f, { id: uuidv4() }));
     if (editType === 'addFeature') {
-      if (this.mode === CUT_MODE) {
+      if (this.mode === MASK_MODE) {
         const sharp = updatedData.features[featureIndexes[0]];
         updatedData.features.splice(featureIndexes[0], 1);
         const { geometry, actionIds } = cutGeometry(updatedData, sharp);
@@ -356,7 +356,7 @@ export class MapEditor extends React.Component {
     const editableGeoJsonLayer = (this.currentLayer && !this.currentLayer.hidden) ? new EditableGeoJsonLayer(Object.assign({}, this.currentLayer, {
       id: this.currentLayer.id,
       selectedFeatureIndexes: this.selectedFeatureIndexes,
-      mode: this.mode === CUT_MODE ? DRAW_POLYGON : this.mode,
+      mode: this.mode === MASK_MODE ? DRAW_POLYGON : this.mode,
       lineWidthScale: 2,
       lineWidthMinPixels: 1,
       lineWidthMaxPixels: 2,
@@ -448,10 +448,10 @@ export class MapEditor extends React.Component {
         handle: this.setEditMode.bind(this, SPLIT_MODE)
       },
       {
-        text: 'Cut',
+        text: 'Mask',
         icon: 'exclude',
-        mode: CUT_MODE,
-        handle: this.setCutMode.bind(this)
+        mode: MASK_MODE,
+        handle: this.setMaskMode.bind(this)
       }
     ];
 

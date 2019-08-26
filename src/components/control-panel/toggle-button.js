@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip } from 'antd';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Styled from 'styled-components';
@@ -33,11 +34,14 @@ function isActive(currentMode, mode) {
   }
   return currentMode.findIndex(m => m === mode) > -1;
 }
+
 function ToggleButton(props) {
   return (
-    <StyledToggleButton className={classNames({ active: isActive(props.data.mode, props.mode)})} onClick={props.data.handle}>
-      <SvgIcon name={props.data.icon} />
-    </StyledToggleButton>
+    <Tooltip placement="right" title={props.data.text}>
+      <StyledToggleButton className={classNames({ active: isActive(props.data.mode, props.mode)})} onClick={props.data.handle}>
+          <SvgIcon name={props.data.icon} />
+      </StyledToggleButton>
+    </Tooltip>
   );
 }
 
