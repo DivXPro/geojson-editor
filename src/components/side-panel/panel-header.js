@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Dropdown } from 'antd';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import PanelToggle from './panel-toggle';
-import SetupProfile from '../setup/setup-profile';
+import SvgIcon from '@/components/commons/svg-icon';
 
 const StyledPanelHeader = styled.div.attrs({
   className: 'panel-header'
@@ -36,20 +37,24 @@ const StyledPanelHeader = styled.div.attrs({
 
 
 function PanelHeader(props) {
-  const [showSetup, setShowSetup] = useState(false);
 
   return (
     <React.Fragment>
       <StyledPanelHeader>
         <div className="panel-header__logo-title">{props.title}</div>
-        <div className="panel-header__action" onClick={e => setShowSetup(true)}>设置</div>
+        <div className="panel-header__action">
+          <Dropdown overlay={props.menu} trigger={['click']}>
+            <div>
+              <SvgIcon fill="rgb(106,116,133)" hoverFill="white" name="more"></SvgIcon>
+            </div>
+          </Dropdown>
+        </div>
       </StyledPanelHeader>
       <PanelToggle
         activePanel={props.activePanel}
         panels={props.panels}
         togglePanel={props.togglePanel}
       />
-      <SetupProfile visible={showSetup} finish={e => setShowSetup(false)} />
     </React.Fragment>
   );
 }
