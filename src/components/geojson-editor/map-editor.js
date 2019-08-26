@@ -395,19 +395,19 @@ export class MapEditor extends React.Component {
       },
       {
         text: 'LineString',
-        icon: 'arrow_right',
+        icon: 'route-line',
         mode: DRAW_LINE_STRING,
         handle: this.setDrawMode.bind(this, DRAW_LINE_STRING)
       },
       {
         text: 'Polygon',
-        icon: 'sharp',
+        icon: 'shape-line',
         mode: [DRAW_POLYGON, DRAW_90_DEGREE_POLYGON],
         handle: this.setDrawMode.bind(this, DRAW_POLYGON)
       },
       {
         text: 'Point',
-        icon: 'pin_sharp_plus',
+        icon: 'map-pin-add-line',
         mode: DRAW_POINT,
         handle: this.setDrawMode.bind(this, DRAW_POINT)
       },

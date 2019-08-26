@@ -24,10 +24,6 @@ const StyledPanelHeader = styled.div.attrs({
     font-size: 14px;
     text-align: center;
     color: rgb(106, 116, 133);
-    margin-left: 4px;
-    width: 40px;
-    border-radius: 2px;
-    padding: 5px;
     :hover {
       cursor: pointer;
       color: rgb(211, 216, 224);
@@ -44,9 +40,9 @@ function PanelHeader(props) {
         <div className="panel-header__logo-title">{props.title}</div>
         <div className="panel-header__action">
           <Dropdown overlay={props.menu} trigger={['click']}>
-            <div>
+            <span>
               <SvgIcon fill="rgb(106,116,133)" hoverFill="white" name="more"></SvgIcon>
-            </div>
+            </span>
           </Dropdown>
         </div>
       </StyledPanelHeader>

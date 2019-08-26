@@ -39,11 +39,11 @@ function SideBar (props) {
 
   const menu = (
     <Menu>
-      <Menu.Item key="0">
-        <div onClick={e => setShowSetup(true)}>设置</div>
+      <Menu.Item key="0" onClick={e => setShowSetup(true)}>
+        <span>设置</span>
       </Menu.Item>
-      <Menu.Item key="1">
-        <div onClick={exportZip.bind(this)}>打包导出</div>
+      <Menu.Item key="1" onClick={exportZip.bind(this)}>
+        <span>打包导出</span>
       </Menu.Item>
     </Menu>
   );

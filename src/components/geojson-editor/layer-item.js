@@ -69,14 +69,14 @@ function LayerItem(props) {
 
   const menu = () => (
     <Menu>
-      <Menu.Item>
-        <span onClick={handleCurrent}>编辑当前层</span>
+      <Menu.Item key="0" onClick={handleCurrent}>
+        <span>编辑当前层</span>
       </Menu.Item>
-      <Menu.Item>
-        <span onClick={handleExport}>导出</span>
+      <Menu.Item key="1" onClick={handleExport}>
+        <span>导出</span>
       </Menu.Item>
-      <Menu.Item>
-        <span onClick={handleRemoveLayer}>删除</span>
+      <Menu.Item key="2" onClick={handleRemoveLayer}>
+        <span>删除</span>
       </Menu.Item>
     </Menu>
   );
