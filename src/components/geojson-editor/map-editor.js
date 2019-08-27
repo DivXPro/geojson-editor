@@ -69,6 +69,7 @@ export class MapEditor extends React.Component {
       copyFeatures: null,
       prevMode: null,
       tempData: null,
+      multSelect: false,
     }
   }
 
@@ -143,21 +144,11 @@ export class MapEditor extends React.Component {
   }
 
   shiftDownHandle() {
-    if (this.mode === TRANSLATE_MODE) {
-      this.setState({
-        prevMode: this.mode
-      });
-      this.props.setMode(ROTATE_MODE);
-    }
+    this.setState({ multSelect: true });
   }
 
   shiftUpHandle() {
-    if (this.state.prevMode != null) {
-      this.props.setMode(this.state.prevMode);
-      this.setState({
-        prevMode: null
-      });
-    }
+    this.setState({ multSelect: false });
   }
 
   ctrlAndCHandle() {
@@ -286,7 +277,7 @@ export class MapEditor extends React.Component {
   }
 
   onEdit = ({ updatedData, editType, featureIndexes, editContext }) => {
-    let updatedSelectedFeatureIndexes = this.selectedFeatureIndexes;
+    let updatedSelectedFeatureIndexes = featureIndexes;
     if (editType === 'removePosition' && !this.state.pointsRemovable) {
       return;
     }
@@ -305,7 +296,6 @@ export class MapEditor extends React.Component {
           this.currentLayer.data.features, geometry.features,
         );
         this.props.addDrawHistory(actions);
-        // this.props.setGeometry(geometry)
         this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
         return;
       }
@@ -322,7 +312,7 @@ export class MapEditor extends React.Component {
       );
       this.props.addDrawHistory(actions);
       this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
-      // this.props.setGeometry(Object.assign({}, updatedData));
+      this.props.setMode(TRANSLATE_MODE);
     } else if (['translated', 'addPosition', 'finishMovePosition', 'rotated', 'scaled', 'split'].some(t => t === editType)) {
       const useTempData = ['translated', 'finishMovePosition', 'rotated', 'scaled'].some(t => t === editType);
       const actionIds = {
@@ -340,16 +330,11 @@ export class MapEditor extends React.Component {
       this.clearTempData();
       this.props.addDrawHistory(actions);
       this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
-      // this.props.setGeometry(Object.assign({}, updatedData));
     } else {
       this.setTempData(editType, this.currentLayer.data);
       this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
       this.props.setGeometry(Object.assign({}, updatedData));
     }
-
-    // this.props.addDrawHistory(this.makeHistory(editType, this.props.currentLayerId, featureIndexes, updatedData.features));
-    // this.props.setSelectFeatureIndexes(updatedSelectedFeatureIndexes);
-    // this.props.setGeometry(Object.assign({}, updatedData));
   }
 
   render() {
@@ -367,8 +352,18 @@ export class MapEditor extends React.Component {
       onClick: ({ object, x, y, coordinate }) => {
         const index = this.currentLayer.data.features.findIndex(d => d === object);
         if (this.mode === VIEW_MODE || this.mode === TRANSLATE_MODE) {
-          this.props.setSelectFeatureIndexes([index]);
-          this.props.setMode(TRANSLATE_MODE);
+          if (this.state.multSelect) {
+            const idxAddr = this.props.selectedFeatureIndexes.findIndex(idx => idx === index);
+            if (idxAddr > -1) {
+              this.props.setSelectFeatureIndexes(this.props.selectedFeatureIndexes.filter(idx => idx !== index));
+            } else {
+              this.props.setSelectFeatureIndexes([...this.props.selectedFeatureIndexes, index]);
+            }
+            this.props.setMode(TRANSLATE_MODE);
+          } else {
+            this.props.setSelectFeatureIndexes([index]);
+            this.props.setMode(TRANSLATE_MODE);
+          }
         }
       },
       onEdit: this.onEdit.bind(this),

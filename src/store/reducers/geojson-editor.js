@@ -139,19 +139,20 @@ function spliceHistory(history, start) {
 
 function doAction(layer, actions) {
   let features = Immutable.List(layer.data.features).toJS();
-  if (actions.addActions) {
+  if (actions.addActions && actions.addActions.length) {
     const newFeatures = actions.addActions.map(a => a.next);
     features.push(...newFeatures);
   }
-  if (actions.modifyActions) {
+  if (actions.modifyActions && actions.modifyActions.length) {
     actions.modifyActions.forEach(a => {
       const index = features.findIndex(f => f.id === a.id);
+      console.log('index', index, a.next);
       if (index > -1) {
         features[index] = a.next;
       }
     });
   }
-  if (actions.deleteActions) {
+  if (actions.deleteActions && actions.deleteActions.length) {
     features = layer.data.features.filter(f => actions.deleteActions.some(a => a.id !== f.id));
   }
   return Immutable.set(layer, 'data', Immutable.set(layer.data, 'features', features));
