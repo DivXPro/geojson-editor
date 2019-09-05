@@ -24,6 +24,7 @@ export function makeDeckGeoJsonLayer(layer) {
 export function makeGeoJsonLayer(layer) {
   const id = uuidv4();
   return Object.assign({}, {
+    uid: id,
     id: id,
     deckId: id,
     name: 'untitled',

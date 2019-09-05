@@ -84,7 +84,7 @@ function LayerItem(props) {
   let nameEditRef = null;
 
   const handleCurrent = () => {
-    dispatch(setCurrentLayer(props.layer.id));
+    dispatch(setCurrentLayer(props.layer.uid));
   }
 
   const handlePickColor = (color) => {
@@ -103,7 +103,7 @@ function LayerItem(props) {
   }
 
   const handleChangeName = (name) => {
-    dispatch(setLayerName(props.layer.id, name));
+    dispatch(setLayerName(props.layer.uid, name));
   }
 
   const toggleLayerDisplay = () => {
@@ -111,7 +111,7 @@ function LayerItem(props) {
   }
 
   const handleRemoveLayer = () => {
-    dispatch(removeLayer(props.layer.id));
+    dispatch(removeLayer(props.layer.uid));
   }
 
   const handleClose = () => {
@@ -126,7 +126,7 @@ function LayerItem(props) {
   }
 
   const isCurrentLayer = () => {
-    return currentLayerId === props.layer.id;
+    return currentLayerId === props.layer.uid;
   }
 
   return <StyledLayerItem>

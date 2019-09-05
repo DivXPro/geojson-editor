@@ -268,12 +268,12 @@ export class MapEditor extends React.Component {
 
   get layers() {
     return this.props.layers
-    .filter(layer => !layer.hidden && layer.id !== this.props.currentLayerId)
+    .filter(layer => !layer.hidden && layer.uid !== this.props.currentLayerId)
     .map(layer => new GeoJsonLayer(layer));
   }
 
   get currentLayer() {
-    return this.props.layers.find(layer => layer.id === this.props.currentLayerId);
+    return this.props.layers.find(layer => layer.uid === this.props.currentLayerId);
   }
 
   onEdit = ({ updatedData, editType, featureIndexes, editContext }) => {
@@ -351,6 +351,7 @@ export class MapEditor extends React.Component {
       },
       onClick: ({ object, x, y, coordinate }) => {
         const index = this.currentLayer.data.features.findIndex(d => d === object);
+        console.log('onClick index', index);
         if (this.mode === VIEW_MODE || this.mode === TRANSLATE_MODE) {
           if (this.state.multSelect) {
             const idxAddr = this.props.selectedFeatureIndexes.findIndex(idx => idx === index);

@@ -19,7 +19,7 @@ const defaultLayer = makeDeckGeoJsonLayer();
 
 const initState = {
   layers: [defaultLayer],
-  currentLayerId: defaultLayer.id,
+  currentLayerId: defaultLayer.uid,
   selectedFeatureIndexes: [],
   mode: 'view',
   history: [],
@@ -32,7 +32,7 @@ function geometryApp(state = initState, action) {
     case SET_GEOMETRY:
       return Immutable.set(state, 'layers', setLayerData(state.layers, state.currentLayerId, action.geometry));
     case SET_CURRENT_LAYER:
-      return setCurrentLayer(state, action.id);
+      return setCurrentLayer(state, action.uid);
     case SET_SELECT_FEATURE_INDEXES:
       return Immutable.set(state, 'selectedFeatureIndexes', action.indexes);
     case SET_MODE:
@@ -56,47 +56,51 @@ function geometryApp(state = initState, action) {
   }
 }
 
-function setCurrentLayer(state, id) {
-  if (state.currentLayerId === id) {
+function setCurrentLayer(state, uid) {
+  if (state.currentLayerId === uid) {
     return state;
   }
-  const newLayerIndex = state.layers.findIndex(l => l.uid === id);
+  const newLayerIndex = state.layers.findIndex(l => l.uid === uid);
   const oldLayerIndex = state.layers.findIndex(l => l.uid === state.currentLayerId);
   const newLayer = geojson2Edit(state.layers[newLayerIndex]);
   const oldLayer = edit2Geojson(state.layers[oldLayerIndex]);
   const layers = Immutable.fromJS(state.layers).set(newLayerIndex, newLayer).set(oldLayerIndex, oldLayer);
   return Immutable.fromJS(state)
     .set('layers', layers)
-    .set('currentLayerId', newLayer.id)
+    .set('currentLayerId', newLayer.uid)
     .toJS();
 }
 
 function addLayer(layers, layer) {
-  if (layers.findIndex(l => l.uid === layer.id) === -1) {
+  if (layers.findIndex(l => l.uid === layer.uid) === -1) {
     return Immutable.set(layers, layers.length, layer);
   }
   return layers;
 }
 
 function setLayer(layers, layer) {
-  const index = layers.findIndex(l => l.uid === layer.id);
+  const index = layers.findIndex(l => l.uid === layer.uid);
+  console.log('setLayer', index);
   if (index > -1) {
     return Immutable.set(layers, index, layer);
   }
 }
 
-function setLayerData(layers, id, data) {
-  const index = layers.findIndex(l => l.id === id);
-  return setLayer(layers, Immutable.set(layers[index], 'data', data))
+function setLayerData(layers, uid, data) {
+  const index = layers.findIndex(l => l.uid === uid);
+  console.log('setLayerData index', index);
+  const d = setLayer(layers, Immutable.set(layers[index], 'data', data));
+  console.log('newLayers', d);
+  return d;
 }
 
-function setLayerName(layers, id, name) {
-  const index = layers.findIndex(l => l.uid === id);
+function setLayerName(layers, uid, name) {
+  const index = layers.findIndex(l => l.uid === uid);
   return Immutable.set(layers, index, Immutable.set(layers[index], 'name', name));
 }
 
-function removeLayer(layers, id) {
-  const index = layers.findIndex(l => l.uid === id);
+function removeLayer(layers, uid) {
+  const index = layers.findIndex(l => l.uid === uid);
   if (index > -1) {
     return Immutable.remove(layers, index);
   }
@@ -146,7 +150,6 @@ function doAction(layer, actions) {
   if (actions.modifyActions && actions.modifyActions.length) {
     actions.modifyActions.forEach(a => {
       const index = features.findIndex(f => f.id === a.id);
-      console.log('index', index, a.next);
       if (index > -1) {
         features[index] = a.next;
       }

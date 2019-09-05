@@ -22,8 +22,8 @@ export const LOAD_DATASET_LIST = 'LOAD_DATASET_LIST';
 /*
  * action 创建函数
  */
-export function setCurrentLayer(id) {
-  return { type: SET_CURRENT_LAYER, id};
+export function setCurrentLayer(uid) {
+  return { type: SET_CURRENT_LAYER, uid};
 }
 
 export function setGeometry(geometry) {
