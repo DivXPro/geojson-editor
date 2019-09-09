@@ -7,7 +7,7 @@ import { GlobalHotKeys } from 'react-hotkeys';
 import { connect } from 'react-redux'
 import { EditableGeoJsonLayer } from 'nebula.gl';
 import { GeoJsonLayer } from '@deck.gl/layers';
-import cutGeometry from '@/utils/cut-geometry';
+import { maskGeometry } from '@/utils/geometry';
 import ControlPlanel from '@/components/control-panel/control-panel';
 import { setGeometry, setSelectFeatureIndexes, setMode, loadDataset, addDrawHistory, undo, redo } from '@/store/actions/geojson-editor';
 import SideBar from './side-bar';
@@ -286,7 +286,7 @@ export class MapEditor extends React.Component {
       if (this.mode === MASK_MODE) {
         const sharp = updatedData.features[featureIndexes[0]];
         updatedData.features.splice(featureIndexes[0], 1);
-        const { geometry, actionIds } = cutGeometry(updatedData, sharp);
+        const { geometry, actionIds } = maskGeometry(updatedData, sharp);
         updatedSelectedFeatureIndexes = [];
         this.props.setMode(VIEW_MODE);
         const actions = this.makeHistory(

@@ -1,7 +1,7 @@
 import difference from '@turf/difference';
 import booleanContains from '@turf/boolean-contains';
 
-function cutGeometry(geometry, sharp) {
+export function maskGeometry(geometry, sharp) {
   const actionIds = {
     modify: [],
     add: [],
@@ -34,5 +34,40 @@ function cutGeometry(geometry, sharp) {
   }
 }
 
-export default cutGeometry;
+export function multiGeoJson(features, type) {
+  const actionIds = {
+    modify: [],
+    add: [],
+    delete: [],
+  };
+  const mFeatures = {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      type,
+      coordinates: [
+        ...features.map(stringLine => stringLine.geometry.coordinates)
+      ]
+    }
+  };
+  features.forEach(stringLine => {
+    actionIds.delete.push(stringLine.id);
+  });
+  actionIds.add.push(mFeatures);
+  return {
+    geometry: mFeatures,
+    actionIds,
+  };
+}
 
+export function multiStringLine(lines) {
+  return multiGeoJson(lines, 'MultiStringLine');
+}
+
+export function multiPoint(points) {
+  return multiGeoJson(points, 'MultiPoint');
+}
+
+export function multiPolygon(polygons) {
+  return multiGeoJson(polygons, 'MultiPolygon');
+}
