@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { Upload, Modal, Radio } from 'antd';
+import { Upload, Modal, Radio, Menu, Dropdown } from 'antd';
 import { addLayer } from '@/store/actions/geojson-editor';
 import LayerItem from './layer-item';
 import { next } from '@/mapbox/next';
@@ -93,6 +93,25 @@ function LayerList(props) {
       dispatch(addLayer(layer));
     }
   }
+  const createLayer = () => {
+    const layer = makeGeoJsonLayer({
+      name: 'untitled',
+      data: { "type": "FeatureCollection", "features": [] },
+      pickable: false,
+      stroked: false,
+      filled: true,
+      extruded: false,
+      lineWidthScale: 1,
+      lineWidthMinPixels: 2,
+      lineWidthMaxPixels: 3,
+      getFillColor: [],
+      getRadius: 100,
+      getLineWidth: 1,
+      getElevation: 30,
+      hidden: false,
+    });
+    dispatch(addLayer(layer));
+  }
   const importDataset = () => {
     dispatch(loadDataset(chosed.id, chosed.name))
     setVisible(false);
@@ -103,12 +122,27 @@ function LayerList(props) {
     setVisible(true);
   }
 
+  const menu = () => (
+    <Menu>
+      <Menu.Item key="0" onClick={createLayer}>
+        <span>新建图层</span>
+      </Menu.Item>
+      <Menu.Item key="1">
+        <Upload customRequest={e => importGeoJSON(e.file)} showUploadList={false} accept=".geojson,.json">
+          <div className="button">导入GeoJSON</div>
+        </Upload>
+      </Menu.Item>
+      <Menu.Item key="2" onClick={handleImport}>
+        <span>导入Dataset</span>
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <StyledLayerManager>
-      <Upload customRequest={e => importGeoJSON(e.file)} showUploadList={false} accept=".geojson,.json">
-        <div className="button">导入GeoJSON</div>
-      </Upload>
-      <div className="button" onClick={handleImport}>导入Dataset</div>
+      <Dropdown overlay={menu} trigger={['click']}>
+        <div className="button">新图层</div>
+      </Dropdown>
       {layers.map(layer => (<LayerItem key={layer.id} layer={layer} />))}
       <Modal title="导入Dataset" visible={visible} onOk={importDataset} onCancel={e => setVisible(false)}>
         <Radio.Group value={chosed} onChange={e => setChosed(e.target.value)}>
