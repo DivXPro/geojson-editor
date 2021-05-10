@@ -27,7 +27,7 @@
     "deck.gl": "^7.1.10",
     "immutable": "^4.0.0-rc.12",
     "jszip": "^3.2.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "nebula.gl": "^0.14.0",
     "prismjs": "^1.17.1",
     "proto-props": "^3.0.0",
